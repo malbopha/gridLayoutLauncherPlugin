@@ -1,3 +1,2 @@
-# contactUsPlugin
-Contact Us Plugin
-This is a test.
+# gridLayoutLauncherPlugin
+Grid Layout Launcher Plugin
