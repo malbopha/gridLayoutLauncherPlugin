@@ -1,14 +1,287 @@
 <!DOCTYPE html>
 <html ng-app="gridLayoutLauncherPluginDesign">
 <head lang="en">
-    <meta charset="UTF-8">
+    <!-- CSS -->
+    <link href="../../../../styles/helper.css" rel="stylesheet">
+    <link href="../../../../styles/siteIcons.css" rel="stylesheet">
+	
+	<!-- JS -->
     <script src="../../../../scripts/buildfire.js"></script>
     <script src="../../../../scripts/angular/angular.min.js"></script>
+
+    <meta charset="UTF-8">
 </head>
 <body ng-controller="gridLayoutLauncherPluginCtrl">
 
-	<div>
-		<h4>Design Tab</h4>
+	<div class="item row clearfix">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Layout Style</span>
+			<span class="tip btn-info-icon btn-primary transition-third" tooltip="Select the design style you would like to use." tooltip-placement="right"></span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="screens clearfix">
+				<div class="screen layouticon pull-left">
+					<a class="border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/31x33">
+					</a>
+				</div>
+				<div class="screen layoutgrid pull-right margin-left-zero border-grey border-radius-three">
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/53x63">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/33x11">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/133x63">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/53x131">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/53x24">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/33x63">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/13x32">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/33x44">
+					</a>
+					<a class="layouticon border-grey border-radius-three default-background-hover text-center">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/25x50">
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="item clearfix row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Header Logo</span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="screens clearfix">
+				<div class="screen logoicon pull-left">
+					<a class="border-grey border-radius-three default-background-hover text-center" onclick="alert('Open Media Library');">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/133x101">
+					</a>
+					<span class="icon btn-icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"><span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="item clearfix row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Image Carousel</span>
+			<span class="tip btn-info-icon btn-primary transition-third" tooltip="These are your slider images. You can link them to other parts of your app using DeepLink URLs or to web content using standard URLs." tooltip-placement="right"></span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="clearfix">
+				<a class="btn btn-success pull-left" onclick="alert('Open Media Library');">Add Image</a>
+			</div>
+			<div class="carousel-items draggable-list-view margin-top-twenty border-radius-four border-grey">
+				<div class="d-item">
+					<span class="icon icon-menu"></span>
+					<img src="http://www.placehold.it/80x50" class="border-radius-four border-grey">
+					<div class="copy pull-right">
+						<span class="title ellipsis">Image Title</span>
+						<a class="text-primary text" onclick="window.openDialog('deepLink.html', null, 'sm', null)">Link</a>											
+						<span class="btn-icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"><span>
+					</div>
+				</div>
+				<div class="d-item">
+					<span class="icon icon-menu"></span>
+					<img src="http://www.placehold.it/80x50" class="border-radius-four border-grey">
+					<div class="copy pull-right">
+						<span class="title ellipsis">Image Title</span>
+						<a class="text-primary text" onclick="window.openDialog('deepLink.html', null, 'sm', null)">Link</a>											
+						<span class="btn-icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"><span>
+					</div>
+				</div>
+				<div class="d-item">
+					<span class="icon icon-menu"></span>
+					<img src="http://www.placehold.it/80x50" class="border-radius-four border-grey">
+					<div class="copy pull-right">
+						<span class="title ellipsis">Image Title</span>
+						<a class="text-primary text" onclick="window.openDialog('deepLink.html', null, 'sm', null)">Link</a>											
+						<span class="btn-icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"><span>
+					</div>
+				</div>
+				<div class="d-item">
+					<span class="icon icon-menu"></span>
+					<img src="http://www.placehold.it/80x50" class="border-radius-four border-grey">
+					<div class="copy pull-right">
+						<span class="title ellipsis">Image Title</span>
+						<a class="text-primary text" onclick="window.openDialog('deepLink.html', null, 'sm', null)">Link</a>											
+						<span class="btn-icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"><span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr>
+	<div class="item clearfix screens row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Background Images</span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="screens flexalign clearfix">
+				<div class="screen mostdevices pull-left text-center">										
+					<a class="border-grey border-radius-three default-background-hover" onclick="alert('Open Media Library');">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/133x231">
+					</a>
+					<span class="icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"></span>
+					<label>Most Devices</label>
+					<label class="secondary">640x920</label>
+				</div>
+				<div class="screen iphone pull-left text-center">
+					<a class="border-grey border-radius-three default-background-hover" onclick="alert('Open Media Library');">
+						<span class="add-icon">+</span>											
+					</a>
+					<span class="icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"></span>
+					<label>iPhone 5/6/6+</label>
+					<label class="secondary">750x1294</label>
+				</div>
+				<div class="screen ipads pull-left text-center">
+					<a class="border-grey border-radius-three default-background-hover" onclick="alert('Open Media Library');">
+						<span class="add-icon">+</span>											
+					</a>
+					<span class="icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"></span>
+					<label>iPads</label>
+					<label class="secondary">1536x2048</label>
+				</div>
+				<div class="screen tablets pull-left text-center">
+					<a class="border-grey border-radius-three default-background-hover" onclick="alert('Open Media Library');">
+						<span class="add-icon hidden">+</span>
+						<img src="http://www.placehold.it/333x631">
+					</a>
+					<span class="icon btn-delete-icon btn-danger transition-third" onclick="window.openDialog('remove.html', null, 'sm', null)"></span>
+					<label>Tablets</label>
+					<label class="secondary">1600x2560</label>
+				</div>
+			</div>
+			<p class="info margin-top-thirty margin-bottom-zero">* Images must be uploaded in PNG format. Size must not exceed 2MB.</p>
+		</div>
+	</div>
+	<hr>
+	<div class="item clearfix row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Font</span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="dropdown" dropdown>
+				<button class="btn btn-default text-left dropdown-toggle" data-toggle="dropdown" dropdown-toggle aria-expanded="true">
+					<span class="pull-left">Proxima Nova</span>
+			  		<span class="chevron icon-chevron-down pull-right"></span>
+				</button>					
+				<ul class="dropdown-menu extended" role="menu">
+					<li><a href="" tabindex="-1" class="transition-third">Proxima Nova</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">Helvetica</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">Arial</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">Sans Serif</a></li>
+                </ul>
+			</div>
+		</div>
+	</div>
+	<hr class="none">
+	<!--
+	<div class="item clearfix row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Font Size</span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="dropdown col-md-6 padding-zero" dropdown>
+				<button class="btn btn-default text-left dropdown-toggle" data-toggle="dropdown" dropdown-toggle aria-expanded="true">
+					<span class="pull-left">16</span>
+			  		<span class="chevron icon-chevron-down pull-right"></span>
+				</button>					
+				<ul class="dropdown-menu extended" role="menu">
+                    <li><a href="" tabindex="-1" class="transition-third">16</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">18</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">20</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">22</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">24</a></li>
+                </ul>
+			</div>
+		</div>
+	</div>
+	<hr class="none">
+	<div class="item clearfix row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Icon Size</span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="dropdown col-md-6 padding-zero" dropdown>
+				<button class="btn btn-default text-left dropdown-toggle" data-toggle="dropdown" dropdown-toggle aria-expanded="true">
+					<span class="pull-left">32</span>
+			  		<span class="chevron icon-chevron-down pull-right"></span>
+				</button>					
+				<ul class="dropdown-menu extended" role="menu">
+                    <li><a href="" tabindex="-1" class="transition-third">32</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">34</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">36</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">38</a></li>
+                    <li><a href="" tabindex="-1" class="transition-third">40</a></li>
+                </ul>
+			</div>
+		</div>
+	</div>
+	<hr class="none">
+	-->
+	<div class="theme item clearfix row">
+		<div class="labels col-md-3 padding-right-zero pull-left">
+			<span>Colors</span>
+		</div>
+		<div class="main col-md-9 pull-right">
+			<div class="colorgrid row pull-left">
+				<div class="coloritem col-md-6 pull-left">
+					<a class="img-thumbnail">
+						<span class="color btn-primary border-radius-three border-grey transition-third"></span>
+					</a>
+					<label>Tab Icon</label>
+				</div>
+				<div class="coloritem col-md-6 pull-left">
+					<a class="img-thumbnail">
+						<span class="color btn-success border-radius-three border-grey transition-third"></span>
+					</a>
+					<label>Tab Text</label>
+				</div>
+				<div class="coloritem col-md-6 pull-left">
+					<a class="img-thumbnail">
+						<span class="color btn-info border-radius-three border-grey transition-third"></span>
+					</a>
+					<label>Menu Icon</label>
+				</div>
+				<div class="coloritem col-md-6 pull-left">
+					<a class="img-thumbnail">
+						<span class="color btn-warning border-radius-three border-grey transition-third"></span>
+					</a>
+					<label>Menu Icon Background</label>
+				</div>
+				<div class="coloritem col-md-6 pull-left">
+					<a class="img-thumbnail">
+						<span class="color btn-danger border-radius-three border-grey transition-third"></span>
+					</a>
+					<label>Main Background</label>
+				</div>
+			</div>
+		</div>
 	</div>
 
 <script>
