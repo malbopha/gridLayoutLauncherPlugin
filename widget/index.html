@@ -1,52 +1,359 @@
-<!DOCTYPE html>
-<html ng-App="textPlugin">
+﻿<!DOCTYPE html>
+<html ng-app="folderPlugin">
 <head lang="en">
+    <title>widget</title>
     <meta charset="UTF-8">
-    <title>example Text widget</title>
 
+    <!-- CSS -->
+    <link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../../styles/helper.css">
+
+    <!-- JS -->
     <script src="../../../scripts/angular/angular.min.js"></script>
-    <script type="text/javascript" src="../../../scripts/buildfire.js"></script>
+    <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
 
+    <script type="text/javascript" src="../../../scripts/buildfire.js"></script>
+    <script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
+    <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
+    <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
+    <!--<script src="../js/shared.js"></script>-->
+
+</head>
+<body ng-controller="folderPluginCtrl" ng-cloak>
     <style>
-        .style1{
-            border: 5px solid red;
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
         }
 
-        .style2{
-            border: 5px solid blue;
+            .overlay.background {
+                position: fixed;
+                height: 100%;
+            }
+
+                .overlay.background img {
+                    height: 100%;
+                }
+
+        .launcher-plugin .main-logo, .launcher-slider {
+            position: relative;
         }
     </style>
-</head>
-<body>
-<div ng-controller="textPluginCtrl" ng-cloak style="background-image: url({{data.imageUrl}});" class="{{data.design.style}}" >
-    {{data.text}}
-</div>
-<script>
+    <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
+        <img ng-src="{{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}"
+             style="-webkit-filter: blur({{data.design.backgroundBlur}}px);
+             -moz-filter blur({{data.design.backgroundblur}}px);
+             -o-filter blur({{data.design.backgroundblur}}px);
+             -ms-filter blur({{data.design.backgroundblur}}px);
+             -webkit-filter blur({{data.design.backgroundblur}}px);
+             filter blur({{data.design.backgroundblur}}px);">
+    </div>
 
-    var textPluginApp = angular.module('textPlugin', []);
 
-    textPluginApp.controller('textPluginCtrl', ['$scope', function ($scope) {
-        /*
-         * Go pull saved data
-         * */
-        buildfire.datastore.get(function (err, data) {
 
-            $scope.data = data;
-            $scope.$digest();
 
-        });
 
-        /*
-         Listen in if an update occurred on the control panel
-         */
-        buildfire.datastore.onUpdate(function (e) {
-            $scope.data = e.detail.obj;
-            $scope.$digest();
-        });
 
-        buildfire.analytics.trackAction('widget loaded');
-    }]);
-</script>
+
+    <div class="holder padding-zero">
+        <div class="launcher-plugin layout1">
+            <div class="main-logo">
+                <div class="logo-holder">
+                    <table width="100%" cellspacing="0" cellpadding="0" height="100%">
+                        <tbody>
+                            <tr>
+                                <td align="center" valign="center">
+                                    <div class="logo-media">
+                                        <img src="http://www.placehold.it/260x120">
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div ng-class="{ 'hidden': data.content.carouselImages.length == 0 }" class="plugin-banner clearfix border-bottom-grey">
+                <div id="carousel"></div>
+            </div>
+
+            <div class="launcher-slider text-center">
+                <div class="plugin-slide" ng-repeat="plugin in data.plugins">
+                    <div class="launcher-icons" ng-class="{ 'three-row': [1,3,5].indexOf(data.design.selectedLayout) != -1, 'four-row': [2,4,6].indexOf(data.design.selectedLayout) != -1 }">
+                        <a class="launcher-icon" ng-repeat="pluginItem in plugin">
+                            <div class="icon-holder text-center">
+                                <img ng-src="{{ cropImage(pluginItem.iconUrl? pluginItem.iconUrl : 'http://www.placehold.it/450x254', {width: 450, height: 254}) }}">
+                            </div>
+                            <div class="text-holder text-center">
+                                <p class="ellipsis-two">
+                                    {{ pluginItem.title }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        /* Shared functionality */
+        var folderPluginShared = folderPluginShared || {};
+
+        folderPluginShared.getPluginDetails = function (pluginsInfo, pluginIds) {
+            var returnPlugins = [];
+            var tempPlugin = null;
+            for (var id = 0; id < pluginIds.length; id++) {
+                for (var i = 0; i < pluginsInfo.length; i++) {
+                    tempPlugin = {};
+                    if (pluginIds[id] == pluginsInfo[i].id) {
+                        tempPlugin.instanceId = pluginsInfo[i].id;
+                        if (pluginsInfo[i].data) {
+                            tempPlugin.iconUrl = pluginsInfo[i].data.iconUrl;
+                            tempPlugin.title = pluginsInfo[i].data.title;
+                            tempPlugin.pluginTypeId = pluginsInfo[i].data.pluginType.token;
+                            tempPlugin.folderName = pluginsInfo[i].data.pluginType.folderName;
+                        } else {
+                            tempPlugin.iconUrl = "";
+                            tempPlugin.title = "[No title]";
+                        }
+                        returnPlugins.push(tempPlugin);
+                    }
+                    tempPlugin = null;
+                }
+            }
+            return returnPlugins;
+        };
+
+        folderPluginShared.getDefaultScopeData = function () {
+            return {
+                _buildfire: {
+                    plugins: {
+                        dataType: "pluginInstance",
+                        data: []
+                    }
+                },
+                content: {
+                    carouselImages: []
+                },
+                design: {
+                    backgroundImage: null,
+                    selectedLayout: 1,
+                    backgroundblur: 0
+                }
+            };
+        };
+
+        folderPluginShared.save = function (newObj) {
+            buildfire.datastore.save(newObj, function (err, result) {
+                if (err || !result) {
+                    console.error('Error saving the widget details: ', err);
+                }
+                else {
+                    console.info('Widget details saved');
+                }
+            });
+        };
+
+        folderPluginShared.digest = function ($scope) {
+            if (!$scope.$$phase && !$scope.$root.$$phase) {
+                $scope.$apply();
+            }
+        };
+        /* End shared functionality */
+
+        var folderPluginApp = angular.module('folderPlugin', []);
+
+        folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
+            var view = null;
+            var pagesCount = 0;
+            var currentPage = 0;
+            var loadingData = true;
+
+            $scope.data = folderPluginShared.getDefaultScopeData();
+
+            function initDeviceSize(callback) {
+                $scope.deviceHeight = window.innerHeight;
+                $scope.deviceWidth = window.innerWidth;
+                $scope.sliderHeight = Math.ceil(9 * $scope.deviceWidth / 16);
+                if (callback) {
+                    if ($scope.deviceWidth == 0 || $scope.deviceHeight == 0) {
+                        setTimeout(function () {
+                            initDeviceSize(callback);
+                        }, 500);
+                    } else {
+                        callback();
+                        if (!$scope.$$phase && !$scope.$root.$$phase) {
+                            $scope.$apply();
+                        }
+                    }
+                }
+            }
+
+            function preparePluginsData(plugins, pageSize) {
+                if (true) {
+                    var temp = [];
+                    var currentItem = -1;
+                    var pluginsLength = plugins.length;
+                    for (var i = 0; i < pluginsLength; i++) {
+                        if (i % pageSize == 0) {
+                            currentItem++;
+                            temp[currentItem] = [];
+                            temp[currentItem].push(plugins[i]);
+                        } else {
+                            temp[currentItem].push(plugins[i]);
+                        }
+                    }
+                    $scope.data.plugins = temp;
+                    console.error($scope.data.plugins)
+                }
+            }
+            /*
+             * bind data to the scope
+             * */
+            function bind(data) {
+                var pageSize = 0, oddLayouts = [1, 3, 5], evenLayouts = [2, 4, 6];
+                $scope.data = data;
+
+                if (!$scope.data.design) {
+                    $scope.data.design = {
+                        backgroundImage: null,
+                        selectedLayout: 1,
+                        backgroundblur: 0
+                    };
+                }
+
+                //[1,3,5].indexOf(data.design.selectedLayout) != -1, 'four-row': [2,4,6].indexOf(data.design.selectedLayout) 
+                if (oddLayouts.indexOf(data.design.selectedLayout) != -1) {
+                    pageSize = (oddLayouts.indexOf(data.design.selectedLayout) + 1) * 3;
+                } else if (evenLayouts.indexOf(data.design.selectedLayout) != -1) {
+                    pageSize = (evenLayouts.indexOf(data.design.selectedLayout) + 1) * 4;
+                }
+                debugger;
+                preparePluginsData(data.plugins, pageSize);
+
+                if ($scope.data.content && $scope.data.content.carouselImages) {
+                    initDeviceSize(function () {
+                        if (!view) {
+                            view = new buildfire.components.carousel.view("#carousel", $scope.data.content.carouselImages);
+                        } else {
+                            view.loadItems($scope.data.content.carouselImages);
+                        }
+                    });
+                }
+
+                if (!$scope.$$phase && !$scope.$root.$$phase) {
+                    $scope.$apply();
+                }
+
+                // Icon Slider
+                var slides = $('.launcher-slider .plugin-slide').length;
+
+                // Slider needs at least 2 slides or you'll get an error.
+                if (slides > 1) {
+
+                    var sliderData = $('.launcher-slider').data('owlCarousel');
+                    if (sliderData) {
+                        sliderData.destroy();
+                    }
+
+                    $('.launcher-slider').owlCarousel({
+                        loop: false,
+                        nav: false,
+                        items: 1
+                    });
+                }
+
+            }
+
+            function dataLoadedHandler(result) {
+                var pluginsList = null;
+                if (result && result.data && !angular.equals({}, result.data) && result.data.content && result.data.design) {
+                    if (result.data.content && result.data.content.loadAllPlugins) {
+
+                    } else {
+                        pluginsList = result.data._buildfire.plugins;
+
+                        if (result.data._buildfire && pluginsList && pluginsList.result && pluginsList.data) {
+                            result.data.plugins = folderPluginShared.getPluginDetails(result.data._buildfire.plugins.result, result.data._buildfire.plugins.data);
+                        }
+                        bind(result.data);
+                    }
+                }
+            };
+
+            /*
+             * Go pull saved data
+             * */
+            function loadData() {
+                buildfire.datastore.getWithDynamicData(function (err, result) {
+                    if (err) {
+                        console.error("Error: ", err);
+                        return;
+                    }
+                    dataLoadedHandler(result);
+                });
+            }
+
+            loadData();
+
+            /**
+             * when a refresh is triggered get reload data
+             */
+
+            buildfire.datastore.onRefresh(loadData);
+
+            buildfire.datastore.onUpdate(function (result) {
+                dataLoadedHandler(result);
+            });
+
+            $scope.cropImage = function (url, settings) {
+                var options = {};
+                if (!url) {
+                    return "";
+                }
+                else {
+                    if (settings.height) {
+                        options.height = settings.height;
+                    }
+                    if (settings.width) {
+                        options.width = settings.width;
+                    }
+                    return buildfire.imageLib.cropImage(url, options);
+                }
+            };
+
+            $scope.resizeImage = function (url, settings) {
+                var options = {};
+                if (!url) {
+                    return "";
+                }
+                else {
+                    if (settings.height) {
+                        options.height = settings.height;
+                    }
+                    if (settings.width) {
+                        options.width = settings.width;
+                    }
+                    return buildfire.imageLib.resizeImage(url, options);
+                }
+            };
+
+            $scope.navigateToPlugin = function (plugin) {
+                buildfire.navigation.navigateTo({
+                    pluginId: plugin.pluginTypeId,
+                    instanceId: plugin.instanceId,
+                    title: plugin.title,
+                    folderName: plugin.folderName
+                });
+            };
+        }]);
+    </script>
+
+
+
 
 </body>
+
 </html>
