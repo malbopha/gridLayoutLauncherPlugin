@@ -40,18 +40,10 @@ folderPluginShared.getDefaultScopeData = function () {
         },
         design: {
             backgroundImage: null,
+            logoImage: null,
             selectedLayout: 1,
             backgroundblur: 0
         }
-    };
-};
-
-folderPluginShared.getEditorOptions = function () {
-    return {
-        plugins: 'advlist autolink link image lists charmap print preview',
-        skin: 'lightgray',
-        trusted: true,
-        theme: 'modern'
     };
 };
 
@@ -62,7 +54,8 @@ folderPluginShared.getLayouts = function () {
         "./layouts/layout3.png",
         "./layouts/layout4.png",
         "./layouts/layout5.png",
-        "./layouts/layout6.png"
+        "./layouts/layout6.png",
+        "./layouts/layout7.png"
     ];
 };
 

@@ -37,8 +37,13 @@
                     height: 100%;
                 }
 
-        .launcher-plugin .main-logo, .launcher-slider {
+        .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin  {
             position: relative;
+        }
+
+        .layout7 img {
+            max-width: 60px;
+            float: left;
         }
     </style>
     <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
@@ -51,22 +56,30 @@
              filter blur({{data.design.backgroundblur}}px);">
     </div>
 
-
-
-
-
-
-
     <div class="holder padding-zero">
-        <div class="launcher-plugin layout1">
-            <div class="main-logo">
+        <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
+            <div class="menu-links">
+                <a class="menu-item clearfix" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
+                    <img ng-src="{{ cropImage(plugin.iconUrl? plugin.iconUrl : 'http://www.placehold.it/450x254', {width: 80, height: 80}) }}">
+                    <p class="text-primary ellipsis pull-left margin-top-fifteen">
+                        <span class="text text-primary">
+                            {{ plugin.title }}
+                        </span>
+                    </p>
+                    <span class="icon right-arrow pull-right icon-chevron-right"></span>
+                </a>
+            </div>
+        </div>
+
+        <div class="launcher-plugin layout{{ layoutClass[data.design.selectedLayout - 1] }}" ng-if="data.design.selectedLayout != 7">
+            <div class="main-logo" ng-if="data.design.logoImage && ([5, 6, 7].indexOf(data.design.selectedLayout) == -1)">
                 <div class="logo-holder">
                     <table width="100%" cellspacing="0" cellpadding="0" height="100%">
                         <tbody>
                             <tr>
                                 <td align="center" valign="center">
                                     <div class="logo-media">
-                                        <img src="http://www.placehold.it/260x120">
+                                        <img ng-src="{{ cropImage(data.design.logoImage, {width: deviceWidth - 30, height: 150}) }}">
                                     </div>
                                 </td>
                             </tr>
@@ -82,7 +95,7 @@
             <div class="launcher-slider text-center">
                 <div class="plugin-slide" ng-repeat="plugin in data.plugins">
                     <div class="launcher-icons" ng-class="{ 'three-row': [1,3,5].indexOf(data.design.selectedLayout) != -1, 'four-row': [2,4,6].indexOf(data.design.selectedLayout) != -1 }">
-                        <a class="launcher-icon" ng-repeat="pluginItem in plugin">
+                        <a class="launcher-icon" ng-repeat="pluginItem in plugin" ng-click="navigateToPlugin(pluginItem)">
                             <div class="icon-holder text-center">
                                 <img ng-src="{{ cropImage(pluginItem.iconUrl? pluginItem.iconUrl : 'http://www.placehold.it/450x254', {width: 450, height: 254}) }}">
                             </div>
@@ -163,6 +176,14 @@
         };
         /* End shared functionality */
 
+        folderPluginShared.getLayoutsPageSize = function () {
+            return [3, 4, 6, 8, 9, 12];
+        };
+
+        folderPluginShared.getLayoutsClass = function () {
+            return [4, 2, 3, 1, 5, 6, 7];
+        };
+
         var folderPluginApp = angular.module('folderPlugin', []);
 
         folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
@@ -172,6 +193,10 @@
             var loadingData = true;
 
             $scope.data = folderPluginShared.getDefaultScopeData();
+
+            $scope.pageSize = folderPluginShared.getLayoutsPageSize();
+
+            $scope.layoutClass = folderPluginShared.getLayoutsClass();
 
             function initDeviceSize(callback) {
                 $scope.deviceHeight = window.innerHeight;
@@ -192,22 +217,19 @@
             }
 
             function preparePluginsData(plugins, pageSize) {
-                if (true) {
-                    var temp = [];
-                    var currentItem = -1;
-                    var pluginsLength = plugins.length;
-                    for (var i = 0; i < pluginsLength; i++) {
-                        if (i % pageSize == 0) {
-                            currentItem++;
-                            temp[currentItem] = [];
-                            temp[currentItem].push(plugins[i]);
-                        } else {
-                            temp[currentItem].push(plugins[i]);
-                        }
+                var temp = [];
+                var currentItem = -1;
+                var pluginsLength = plugins.length;
+                for (var i = 0; i < pluginsLength; i++) {
+                    if (i % pageSize == 0) {
+                        currentItem++;
+                        temp[currentItem] = [];
+                        temp[currentItem].push(plugins[i]);
+                    } else {
+                        temp[currentItem].push(plugins[i]);
                     }
-                    $scope.data.plugins = temp;
-                    console.error($scope.data.plugins)
                 }
+                $scope.data.plugins = temp;
             }
             /*
              * bind data to the scope
@@ -224,14 +246,9 @@
                     };
                 }
 
-                //[1,3,5].indexOf(data.design.selectedLayout) != -1, 'four-row': [2,4,6].indexOf(data.design.selectedLayout) 
-                if (oddLayouts.indexOf(data.design.selectedLayout) != -1) {
-                    pageSize = (oddLayouts.indexOf(data.design.selectedLayout) + 1) * 3;
-                } else if (evenLayouts.indexOf(data.design.selectedLayout) != -1) {
-                    pageSize = (evenLayouts.indexOf(data.design.selectedLayout) + 1) * 4;
+                if (data.design.selectedLayout != 7) {
+                    preparePluginsData(data.plugins, $scope.pageSize[data.design.selectedLayout - 1]);
                 }
-                debugger;
-                preparePluginsData(data.plugins, pageSize);
 
                 if ($scope.data.content && $scope.data.content.carouselImages) {
                     initDeviceSize(function () {
@@ -258,11 +275,13 @@
                         sliderData.destroy();
                     }
 
-                    $('.launcher-slider').owlCarousel({
-                        loop: false,
-                        nav: false,
-                        items: 1
-                    });
+                    if (data.design.selectedLayout != 7) {
+                        $('.launcher-slider').owlCarousel({
+                            loop: false,
+                            nav: false,
+                            items: 1
+                        });
+                    }
                 }
 
             }
@@ -305,6 +324,7 @@
             buildfire.datastore.onRefresh(loadData);
 
             buildfire.datastore.onUpdate(function (result) {
+                debugger;
                 dataLoadedHandler(result);
             });
 

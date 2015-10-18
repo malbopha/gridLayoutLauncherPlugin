@@ -24,22 +24,7 @@
 </head>
 <body ng-controller="folderPluginCtrl" ng-cloak ng-show="datastoreInitialized">
     <div ng-form="frmMain">
-
         <div id="carousel"></div>
-
-        <div class="item clearfix row">
-            <div class="labels col-md-3 padding-right-zero pull-left">
-                <span>Text</span>
-            </div>
-        </div>
-
-        <hr class="none">
-        <div class="item clearfix row">
-            <div class="main col-md-12 pull-left">
-                <textarea id="text" ui-tinymce="editorOptions" class="form-control" rows="5" width="100%" ng-model="data.content.text"></textarea>
-            </div>
-        </div>
-
         <hr class="none">
         <div id="plugins"></div>
     </div>
@@ -51,8 +36,6 @@
             var editor = new buildfire.components.carousel.editor("#carousel");
             var plugins = new buildfire.components.pluginInstance.sortableList("#plugins", [], null, false, true);
             var tmrDelay = null;
-
-            $scope.editorOptions = folderPluginShared.getEditorOptions();
 
             $scope.data = folderPluginShared.getDefaultScopeData();
 
