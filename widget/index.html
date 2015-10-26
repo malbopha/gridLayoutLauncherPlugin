@@ -39,11 +39,6 @@
         .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
             position: relative;
         }
-
-        /*.layout7 img {
-            max-width: 60px;
-            float: left;
-        }*/
     </style>
     <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
         <img ng-src="{{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}"
@@ -108,7 +103,7 @@
                 for (var i = 0; i < pluginsInfo.length; i++) {
                     tempPlugin = {};
                     if (pluginIds[id] == pluginsInfo[i].data.refId) {
-                        tempPlugin.instanceId = pluginsInfo[i].id;
+                        tempPlugin.instanceId = pluginsInfo[i].data.refId;
                         if (pluginsInfo[i].data) {
                             tempPlugin.iconUrl = pluginsInfo[i].data.iconUrl;
                             tempPlugin.title = pluginsInfo[i].data.title;
@@ -319,7 +314,7 @@
             buildfire.datastore.onRefresh(loadData);
 
             buildfire.datastore.onUpdate(function (result) {
-                dataLoadedHandler(result);
+                loadData();
             });
 
             $scope.cropImage = function (url, settings) {
