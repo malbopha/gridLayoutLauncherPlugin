@@ -7,6 +7,7 @@
     <!-- CSS -->
     <link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet" />
     <link rel="stylesheet" href="../../../styles/helper.css">
+    <link rel="stylesheet" href="../../../styles/siteIcons.css">
 
     <!-- JS -->
     <script src="../../../scripts/angular/angular.min.js"></script>
@@ -16,8 +17,6 @@
     <script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
-    <!--<script src="../js/shared.js"></script>-->
-
 </head>
 <body ng-controller="folderPluginCtrl" ng-cloak>
     <style>
@@ -37,14 +36,14 @@
                     height: 100%;
                 }
 
-        .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin  {
+        .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
             position: relative;
         }
 
-        .layout7 img {
+        /*.layout7 img {
             max-width: 60px;
             float: left;
-        }
+        }*/
     </style>
     <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
         <img ng-src="{{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}"
@@ -60,8 +59,11 @@
         <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
             <div class="menu-links">
                 <a class="menu-item clearfix" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
-                    <img ng-src="{{ cropImage(plugin.iconUrl? plugin.iconUrl : 'http://www.placehold.it/450x254', {width: 80, height: 80}) }}">
-                    <p class="text-primary ellipsis pull-left margin-top-fifteen">
+                    <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
+                    <span class="main-icon text-primary pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
+                    <span class="icon icon-puzzle main-icon text-primary pull-left" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
+
+                    <p class="text-primary ellipsis pull-left">
                         <span class="text text-primary">
                             {{ plugin.title }}
                         </span>
@@ -92,22 +94,7 @@
                 <div id="carousel"></div>
             </div>
 
-            <div class="launcher-slider text-center">
-                <div class="plugin-slide" ng-repeat="plugin in data.plugins">
-                    <div class="launcher-icons" ng-class="{ 'three-row': [1,3,5].indexOf(data.design.selectedLayout) != -1, 'four-row': [2,4,6].indexOf(data.design.selectedLayout) != -1 }">
-                        <a class="launcher-icon" ng-repeat="pluginItem in plugin" ng-click="navigateToPlugin(pluginItem)">
-                            <div class="icon-holder text-center">
-                                <img ng-src="{{ cropImage(pluginItem.iconUrl? pluginItem.iconUrl : 'http://www.placehold.it/450x254', {width: 450, height: 254}) }}">
-                            </div>
-                            <div class="text-holder text-center">
-                                <p class="ellipsis-two">
-                                    {{ pluginItem.title }}
-                                </p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <div id="launcherSlider" class="launcher-slider text-center"></div>
         </div>
     </div>
     <script>
@@ -120,7 +107,7 @@
             for (var id = 0; id < pluginIds.length; id++) {
                 for (var i = 0; i < pluginsInfo.length; i++) {
                     tempPlugin = {};
-                    if (pluginIds[id] == pluginsInfo[i].id) {
+                    if (pluginIds[id] == pluginsInfo[i].data.refId) {
                         tempPlugin.instanceId = pluginsInfo[i].id;
                         if (pluginsInfo[i].data) {
                             tempPlugin.iconUrl = pluginsInfo[i].data.iconUrl;
@@ -219,16 +206,20 @@
             function preparePluginsData(plugins, pageSize) {
                 var temp = [];
                 var currentItem = -1;
-                var pluginsLength = plugins.length;
-                for (var i = 0; i < pluginsLength; i++) {
-                    if (i % pageSize == 0) {
-                        currentItem++;
-                        temp[currentItem] = [];
-                        temp[currentItem].push(plugins[i]);
-                    } else {
-                        temp[currentItem].push(plugins[i]);
+                var pluginsLength = 0;
+                if (plugins instanceof Array) {
+                    pluginsLength = plugins.length;
+                    for (var i = 0; i < pluginsLength; i++) {
+                        if (i % pageSize == 0) {
+                            currentItem++;
+                            temp[currentItem] = [];
+                            temp[currentItem].push(plugins[i]);
+                        } else {
+                            temp[currentItem].push(plugins[i]);
+                        }
                     }
                 }
+                
                 $scope.data.plugins = temp;
             }
             /*
@@ -244,6 +235,19 @@
                         selectedLayout: 1,
                         backgroundblur: 0
                     };
+                }
+
+                // Icon Slider
+                var slides = $('#launcherSlider .plugin-slide').length;
+
+                // Slider needs at least 2 slides or you'll get an error.
+                if (slides > 1) {
+
+                    var sliderData = $('#launcherSlider').data('owlCarousel');
+                    if (sliderData) {
+                        sliderData.destroy();
+                        $('#launcherSlider').html("");
+                    }
                 }
 
                 if (data.design.selectedLayout != 7) {
@@ -264,26 +268,16 @@
                     $scope.$apply();
                 }
 
-                // Icon Slider
-                var slides = $('.launcher-slider .plugin-slide').length;
-
-                // Slider needs at least 2 slides or you'll get an error.
-                if (slides > 1) {
-
-                    var sliderData = $('.launcher-slider').data('owlCarousel');
-                    if (sliderData) {
-                        sliderData.destroy();
-                    }
-
-                    if (data.design.selectedLayout != 7) {
-                        $('.launcher-slider').owlCarousel({
+                if ($scope.data.design.selectedLayout != 7) {
+                    $('#launcherSlider').html(prepareSliderHTML());
+                    if ($scope.data.plugins.length > 1) {
+                        $('#launcherSlider').owlCarousel({
                             loop: false,
                             nav: false,
                             items: 1
                         });
                     }
                 }
-
             }
 
             function dataLoadedHandler(result) {
@@ -295,6 +289,7 @@
                         pluginsList = result.data._buildfire.plugins;
 
                         if (result.data._buildfire && pluginsList && pluginsList.result && pluginsList.data) {
+                            console.log(result.data.plugins);
                             result.data.plugins = folderPluginShared.getPluginDetails(result.data._buildfire.plugins.result, result.data._buildfire.plugins.data);
                         }
                         bind(result.data);
@@ -324,7 +319,6 @@
             buildfire.datastore.onRefresh(loadData);
 
             buildfire.datastore.onUpdate(function (result) {
-                debugger;
                 dataLoadedHandler(result);
             });
 
@@ -360,20 +354,52 @@
                 }
             };
 
-            $scope.navigateToPlugin = function (plugin) {
+            $(document).on("click", ".navigate-to-plugin", function (e) {
+                var indices = $(this).data("index").split(","),
+                    plugin = $scope.data.plugins[indices[0]][indices[1]];
                 buildfire.navigation.navigateTo({
                     pluginId: plugin.pluginTypeId,
                     instanceId: plugin.instanceId,
                     title: plugin.title,
                     folderName: plugin.folderName
                 });
-            };
+            });
+
+            var prepareSliderHTML = function () {
+                var slides = $scope.data.plugins,
+                    slidesLength = slides.length,
+                    slidesHTML = "";
+                for (var i = 0; i < slidesLength; i++) {
+                    var currentSlide = slides[i];
+                    slidesHTML += '<div class="plugin-slide">\
+			                       <div class="launcher-icons' + ([1, 3, 5].indexOf($scope.data.design.selectedLayout) != -1 ? ' three-row' : ' four-row') + '">';
+                    for (var y = 0; y < currentSlide.length; y++) {
+                        var pluginItem = currentSlide[y];
+                        slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y +'">\
+					            <div class="icon-holder text-center">';
+                        if (pluginItem.iconUrl)
+                            slidesHTML += '	<img src="' + $scope.cropImage(pluginItem.iconUrl, { width: 100, height: 100 }) + '">';
+
+                        if (pluginItem.iconClassName)
+                            slidesHTML += '<span class="main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
+                        if (!pluginItem.iconUrl && !pluginItem.iconClassName)
+                            slidesHTML += '	<span class="icon icon-puzzle main-icon text-primary"></span>';
+
+                        slidesHTML += '</div>\
+					            <div class="text-holder text-center">\
+						            <p class="ellipsis-two">' +
+                                pluginItem.title
+                        slidesHTML += '	</p>\
+					            </div>\
+				            </a>';
+                    }
+                    slidesHTML += '	</div>\
+		            </div>';
+                }
+                return slidesHTML;
+            }
         }]);
     </script>
-
-
-
-
 </body>
 
 </html>
