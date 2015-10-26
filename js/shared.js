@@ -8,7 +8,7 @@ folderPluginShared.getPluginDetails = function (pluginsInfo, pluginIds) {
         for (var i = 0; i < pluginsInfo.length; i++) {
             tempPlugin = {};
             if (pluginIds[id] == pluginsInfo[i].data.refId) {
-                tempPlugin.instanceId = pluginsInfo[i].id;
+                tempPlugin.instanceId = pluginsInfo[i].data.refId;
                 if (pluginsInfo[i].data) {
                     tempPlugin.iconUrl = pluginsInfo[i].data.iconUrl;
                     tempPlugin.title = pluginsInfo[i].data.title;
