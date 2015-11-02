@@ -39,6 +39,133 @@
         .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
             position: relative;
         }
+
+        /*.no-background .plugin-slide {
+            background-color: transparent;
+        }*/
+
+        .launcher-slider {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 35%;
+        }
+
+        /*.launcher-plugin.layout4 .launcher-slider .launcher-icons {
+            padding-top: 15px;
+        }*/
+
+        #launcherSlider .owl-stage-outer, #launcherSlider .owl-stage, #launcherSlider .owl-item {
+            height: 100%;
+        }
+
+        .layout5 .launcher-slider, .layout6 .launcher-slider {
+            height: 48%;
+        }
+
+        @media (max-height: 560px) {
+            .launcher-slider {
+                height: 37%;
+            }
+
+            .layout4 .launcher-plugin .launcher-icons .launcher-icon,
+            .layout2 .launcher-plugin .launcher-icons .launcher-icon {
+                margin-bottom: 0;
+            }
+
+            .layout4 .launcher-slider .launcher-icons,
+            .layout2 .launcher-slider .launcher-icons {
+                padding-top: 108px !important;
+            }
+
+            .layout5 .launcher-slider, .layout6 .launcher-slider {
+                height: 52%;
+            }
+
+            .launcher-plugin .main-logo .logo-holder img {
+                max-height: 130px;
+            }
+
+            .launcher-plugin .main-logo .logo-holder, .launcher-plugin .main-logo {
+                height: 155px;
+            }
+        }
+
+        @media (max-height: 542px) {
+            .launcher-plugin .launcher-icons .launcher-icon {
+                margin-bottom: 0;
+            }
+
+            .layout4 .launcher-slider, .layout2 .launcher-slider {
+                height: 38%;
+            }
+
+            .launcher-slider {
+                height: 35%;
+            }
+
+            .layout5 .launcher-slider, .layout6 .launcher-slider {
+                height: 46%;
+            }
+        }
+
+        @media (max-height: 500px) {
+
+            .launcher-slider {
+                height: 38%;
+            }
+
+            .launcher-plugin .main-logo .logo-holder img {
+                max-height: 110px;
+            }
+
+            .launcher-plugin .main-logo .logo-holder, .launcher-plugin .main-logo {
+                height: 135px;
+            }
+
+            .layout5 .launcher-slider, .layout6 .launcher-slider {
+                height: 50%;
+            }
+        }
+
+        @media (max-height: 465px) {
+
+            .launcher-slider {
+                height: 38%;
+            }
+
+            .launcher-plugin .main-logo .logo-holder img {
+                max-height: 90px;
+            }
+
+            .launcher-plugin .main-logo .logo-holder, .launcher-plugin .main-logo {
+                height: 115px;
+            }
+
+            .layout5 .launcher-slider, .layout6 .launcher-slider {
+                height: 50%;
+            }
+        }
+
+
+        @media (max-height: 450px) {
+
+            .launcher-slider {
+                position: static;
+            }
+
+            .launcher-plugin .launcher-icons .launcher-icon {
+                margin-bottom: 10px;
+            }
+
+            .launcher-plugin .main-logo .logo-holder img {
+                max-height: 90px;
+            }
+
+            .launcher-plugin .main-logo .logo-holder, .launcher-plugin .main-logo {
+                height: 115px;
+            }
+        }
     </style>
     <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
         <img ng-src="{{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}"
@@ -85,8 +212,8 @@
                 </div>
             </div>
 
-            <div ng-class="{ 'hidden': data.content.carouselImages.length == 0 }" class="plugin-banner clearfix border-bottom-grey">
-                <div id="carousel"></div>
+            <div ng-class="{ 'hidden': data.content.carouselImages.length == 0 }" class="plugin-banner clearfix">
+                <div id="carousel" class="no-background"></div>
             </div>
 
             <div id="launcherSlider" class="launcher-slider text-center"></div>
@@ -100,23 +227,32 @@
             var returnPlugins = [];
             var tempPlugin = null;
             for (var id = 0; id < pluginIds.length; id++) {
+
+                tempPlugin = {};
+
                 for (var i = 0; i < pluginsInfo.length; i++) {
-                    tempPlugin = {};
-                    if (pluginIds[id] == pluginsInfo[i].data.refId) {
-                        tempPlugin.instanceId = pluginsInfo[i].data.refId;
-                        if (pluginsInfo[i].data) {
+                    if (pluginsInfo[i].data) {
+                        if (pluginIds[id] == pluginsInfo[i].data.instanceId) {
+
+                            tempPlugin.instanceId = pluginsInfo[i].data.instanceId;
                             tempPlugin.iconUrl = pluginsInfo[i].data.iconUrl;
                             tempPlugin.title = pluginsInfo[i].data.title;
                             tempPlugin.pluginTypeId = pluginsInfo[i].data.pluginType.token;
                             tempPlugin.folderName = pluginsInfo[i].data.pluginType.folderName;
-                        } else {
-                            tempPlugin.iconUrl = "";
-                            tempPlugin.title = "[No title]";
+                            tempPlugin.iconClassName = pluginsInfo[i].data.iconClassName;
+                            returnPlugins.push(tempPlugin);
+                        }
+                    } else if (pluginIds[id] == pluginsInfo[i].instanceId) {
+                        tempPlugin = pluginsInfo[i];
+                        if (!tempPlugin.title) {
+                            tempPlugin.title = "No title";
                         }
                         returnPlugins.push(tempPlugin);
                     }
-                    tempPlugin = null;
                 }
+
+                tempPlugin = null;
+
             }
             return returnPlugins;
         };
@@ -214,7 +350,7 @@
                         }
                     }
                 }
-                
+
                 $scope.data.plugins = temp;
             }
             /*
@@ -230,19 +366,6 @@
                         selectedLayout: 1,
                         backgroundblur: 0
                     };
-                }
-
-                // Icon Slider
-                var slides = $('#launcherSlider .plugin-slide').length;
-
-                // Slider needs at least 2 slides or you'll get an error.
-                if (slides > 1) {
-
-                    var sliderData = $('#launcherSlider').data('owlCarousel');
-                    if (sliderData) {
-                        sliderData.destroy();
-                        $('#launcherSlider').html("");
-                    }
                 }
 
                 if (data.design.selectedLayout != 7) {
@@ -272,6 +395,12 @@
                             items: 1
                         });
                     }
+                }
+
+                if ($scope.isUpdate) {
+                    view = new buildfire.components.carousel.view("#carousel");
+                    view.loadItems($scope.data.content.carouselImages);
+                    $scope.isUpdate = false;
                 }
             }
 
@@ -314,7 +443,23 @@
             buildfire.datastore.onRefresh(loadData);
 
             buildfire.datastore.onUpdate(function (result) {
-                loadData();
+                
+                var iconSliderData = $('#launcherSlider').data('owlCarousel');
+                if (iconSliderData) {
+                    iconSliderData.trigger('autoplay.stop.owl');
+                    iconSliderData.trigger('autoplay.loop.owl', false);
+                    iconSliderData.destroy();
+                    $('#launcherSlider').html("");
+                }
+
+                if (view) {
+                    view._destroySlider();
+                    view._removeAll();
+                    if ($scope.data.design.selectedLayout == 7) {
+                        $scope.isUpdate = true;
+                    }
+                }
+                dataLoadedHandler(result);
             });
 
             $scope.cropImage = function (url, settings) {
@@ -349,6 +494,15 @@
                 }
             };
 
+            $scope.navigateToPlugin = function (plugin) {
+                buildfire.navigation.navigateTo({
+                    pluginId: plugin.pluginTypeId,
+                    instanceId: plugin.instanceId,
+                    title: plugin.title,
+                    folderName: plugin.folderName
+                });
+            };
+
             $(document).on("click", ".navigate-to-plugin", function (e) {
                 var indices = $(this).data("index").split(","),
                     plugin = $scope.data.plugins[indices[0]][indices[1]];
@@ -370,13 +524,13 @@
 			                       <div class="launcher-icons' + ([1, 3, 5].indexOf($scope.data.design.selectedLayout) != -1 ? ' three-row' : ' four-row') + '">';
                     for (var y = 0; y < currentSlide.length; y++) {
                         var pluginItem = currentSlide[y];
-                        slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y +'">\
+                        slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y + '">\
 					            <div class="icon-holder text-center">';
                         if (pluginItem.iconUrl)
                             slidesHTML += '	<img src="' + $scope.cropImage(pluginItem.iconUrl, { width: 100, height: 100 }) + '">';
 
                         if (pluginItem.iconClassName)
-                            slidesHTML += '<span class="main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
+                            slidesHTML += '<span class="icon main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
                         if (!pluginItem.iconUrl && !pluginItem.iconClassName)
                             slidesHTML += '	<span class="icon icon-puzzle main-icon text-primary"></span>';
 
