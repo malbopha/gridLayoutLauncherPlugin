@@ -25,35 +25,28 @@
             top: 0;
             left: 0;
             width: 100%;
+            height: 100%;
         }
 
-            .overlay.background {
-                position: fixed;
+            .overlay.background img {
                 height: 100%;
             }
 
-                .overlay.background img {
-                    height: 100%;
-                }
 
-        .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
-            position: relative;
+        .holder, .launcher-plugin {
+            height: 100%;
         }
 
-        /*.no-background .plugin-slide {
-            background-color: transparent;
-        }*/
+            .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
+                position: relative;
+            }
 
         .launcher-slider {
-            position: fixed;
+            position: absolute;
             bottom: 0;
             width: 100%;
             height: 35%;
         }
-
-        /*.launcher-plugin.layout4 .launcher-slider .launcher-icons {
-            padding-top: 15px;
-        }*/
 
         #launcherSlider .owl-stage-outer, #launcherSlider .owl-stage, #launcherSlider .owl-item {
             height: 100%;
@@ -443,7 +436,7 @@
             buildfire.datastore.onRefresh(loadData);
 
             buildfire.datastore.onUpdate(function (result) {
-                
+
                 var iconSliderData = $('#launcherSlider').data('owlCarousel');
                 if (iconSliderData) {
                     iconSliderData.trigger('autoplay.stop.owl');
