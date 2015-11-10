@@ -213,6 +213,7 @@
         </div>
     </div>
     <script>
+
         /* Shared functionality */
         var folderPluginShared = folderPluginShared || {};
 
@@ -401,7 +402,12 @@
                 var pluginsList = null;
                 if (result && result.data && !angular.equals({}, result.data) && result.data.content && result.data.design) {
                     if (result.data.content && result.data.content.loadAllPlugins) {
-
+                        buildfire.components.pluginInstance.getAllPlugins(function (err, res) {
+                            pagesCount = Math.ceil(res.total / 20);
+                            result.data.plugins = res.data;
+                            bind(result.data);
+                            loadingData = false;
+                        });
                     } else {
                         pluginsList = result.data._buildfire.plugins;
 
