@@ -23,18 +23,18 @@
             </div>
             <div class="main col-md-9 pull-right">
                 <div class="screens clearfix">
-                    <div class="screen text-center layouticon pull-left wideicon margin-bottom-twenty">
+                    <div class="screen text-center logoicon pull-left">
                         <a class="border-grey border-radius-three default-background-hover" ng-click="changeLogo()">
                             <span class="add-icon" ng-hide="data.design.logoImage">+</span>
                             <img ng-src="{{ resizeImage(data.design.logoImage) }}" alt="Logo Image" ng-show="data.design.logoImage" />
                         </a>
-                        <label class="secondary">750x1334</label>
+                        <label class="secondary">800x300</label>
                         <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteLogo()" ng-show="data.design.logoImage"></span>
                     </div>
                 </div>
             </div>
         </div>
-
+		<hr class="none">
         <div class="item row margin-bottom-twenty clearfix">
             <div class="labels col-md-3 padding-right-zero pull-left">
                 <span>Layout Style</span>
@@ -54,7 +54,7 @@
                 </div>
             </div>
         </div>
-
+		<hr class="none">
         <div class="item clearfix row margin-bottom-twenty">
             <div class="labels col-md-3 padding-right-zero pull-left">
                 <span>Background Image</span>
@@ -69,17 +69,6 @@
                         <label class="secondary">750x1334</label>
                         <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground()" ng-show="data.design.backgroundImage"></span>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="item clearfix row" ng-show="data.design.backgroundImage">
-            <div class="labels col-md-3 padding-right-zero pull-left">
-                <span>Blur Background</span>
-            </div>
-            <div class="main col-md-9 pull-right">
-                <div class="screens clearfix">
-                    <input id="slider1" type="range" min="0" max="8" step="1" value="0" ng-model="data.design.backgroundBlur" />
                 </div>
             </div>
         </div>
