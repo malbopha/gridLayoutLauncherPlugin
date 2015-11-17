@@ -153,9 +153,8 @@
             <div class="menu-links">
                 <a class="menu-item clearfix" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
                     <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
-                    <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
-                    <span class="icon icon-puzzle main-icon pull-left" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
-
+                    <span class="main-icon pull-left text-primary {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
+                    <span class="icon icon-puzzle main-icon text-primary pull-left" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
                     <p class="text-primary ellipsis pull-left">
                         <span class="text text-primary">
                             {{ plugin.title }}
