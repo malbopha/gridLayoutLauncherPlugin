@@ -18,28 +18,16 @@
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
 </head>
-<body ng-controller="folderPluginCtrl" ng-cloak>
+<body ng-controller="folderPluginCtrl" ng-cloak data-ng-attr-style="background:url({{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}) !important; background-size:cover;">
     <style>
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-            .overlay.background img {
-                height: 100%;
-            }
-
-
+    
         .holder, .launcher-plugin {
             height: 100%;
         }
 
-            .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
-                position: relative;
-            }
+        .launcher-plugin .main-logo, .launcher-slider, .launcher-plugin {
+            position: relative;
+        }
 
         .launcher-slider {
             position: absolute;
@@ -160,23 +148,13 @@
             }
         }
     </style>
-    <div class="overlay background" ng-if="data.design.backgroundImage && deviceWidth != 0 && deviceHeight != 0">
-        <img ng-src="{{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}"
-             style="-webkit-filter: blur({{data.design.backgroundBlur}}px);
-             -moz-filter blur({{data.design.backgroundblur}}px);
-             -o-filter blur({{data.design.backgroundblur}}px);
-             -ms-filter blur({{data.design.backgroundblur}}px);
-             -webkit-filter blur({{data.design.backgroundblur}}px);
-             filter blur({{data.design.backgroundblur}}px);">
-    </div>
-
     <div class="holder padding-zero">
         <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
             <div class="menu-links">
                 <a class="menu-item clearfix" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
                     <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
-                    <span class="main-icon text-primary pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
-                    <span class="icon icon-puzzle main-icon text-primary pull-left" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
+                    <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
+                    <span class="icon icon-puzzle main-icon pull-left" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
 
                     <p class="text-primary ellipsis pull-left">
                         <span class="text text-primary">
@@ -187,7 +165,6 @@
                 </a>
             </div>
         </div>
-
         <div class="launcher-plugin layout{{ layoutClass[data.design.selectedLayout - 1] }}" ng-if="data.design.selectedLayout != 7">
             <div class="main-logo" ng-if="data.design.logoImage && ([5, 6, 7].indexOf(data.design.selectedLayout) == -1)">
                 <div class="logo-holder">
