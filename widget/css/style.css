@@ -36,8 +36,8 @@
 }
 .launcher-plugin .launcher-icons .launcher-icon{
 	float:left;
-	margin-bottom:15px;
-	height:65px;
+	margin-bottom:12px;
+	height:68px;
 	overflow:hidden;
 }
 .launcher-plugin .launcher-icons.four-row .launcher-icon{
@@ -57,7 +57,7 @@
 	height:auto;
 }
 .launcher-plugin .launcher-icons .launcher-icon .text-holder p{
-	margin:4px 0 0;
+	margin:6px 0 0;
 	font-size:12px;
 	line-height:15px;
 }
@@ -123,7 +123,7 @@
         max-height: 125px;
     }
     .launcher-plugin .main-logo .logo-holder, .launcher-plugin .main-logo {
-        height: 150px;
+        height: 155px;
     }
 	.plugin-slide img{
 		max-height:300px !important;
