@@ -1,7 +1,7 @@
 {
-   "author":"Ahmad Al-Hmoud",
-   "pluginName":"gridLayoutLauncher",
-   "pluginDescription":"A plugin to be used as the starting page of your application",
+   "author":"BuildFire",
+   "pluginName":"Grid Layout Launcher",
+   "pluginDescription":"Create a unique home page-like experience to point your users where you want them to go. You can also use this as a folder inside your app.",
    "supportEmail":"support@buildfire.com",
    "control":{
       "content":{
