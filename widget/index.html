@@ -20,7 +20,7 @@
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
 </head>
 <body ng-controller="folderPluginCtrl" ng-cloak
-      data-ng-attr-style="background:data.design.colors.backgroundColor url({{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}) !important; background-size:cover !important;">
+      data-ng-attr-style="background: {{data.design.colors.backgroundColor}} url({{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}) !important; background-size:cover !important;">
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
@@ -380,7 +380,7 @@
                 if ($scope.data.design.colors.icons)
                     css += '.plugin-slide .icon, .plugin-slide .icon:hover {color:' + $scope.data.design.colors.icons + ' !important;}';
             }
-            
+
             if (!css) return;
 
             var head = document.head || document.getElementsByTagName('head')[0];
