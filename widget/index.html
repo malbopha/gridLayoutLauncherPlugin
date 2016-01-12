@@ -19,8 +19,7 @@
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
 </head>
-<body ng-controller="folderPluginCtrl" ng-cloak
-      data-ng-attr-style="background: {{data.design.colors.backgroundColor}} url({{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}) !important; background-size:cover !important;">
+<body ng-controller="folderPluginCtrl" ng-cloak data-ng-attr-style="background: {{data.design.colors.backgroundColor}} url({{ cropImage(data.design.backgroundImage, {width: deviceWidth, height: deviceHeight}) }}) !important; background-size:cover !important;">
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
@@ -409,11 +408,10 @@
                     slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y + '">\
 					            <div class="icon-holder text-center">';
                     if (pluginItem.iconUrl)
-                        slidesHTML += '	<img src="' + $scope.cropImage(pluginItem.iconUrl, {width: 100, height: 100}) + '">';
+                        slidesHTML += '	<img src="' + $scope.cropImage(pluginItem.iconUrl, { width: 100, height: 100 }) + '">';
 
-                    if (pluginItem.iconClassName) {
+                    if (pluginItem.iconClassName)
                         slidesHTML += '<span class="icon main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
-                    }
                     if (!pluginItem.iconUrl && !pluginItem.iconClassName)
                         slidesHTML += '	<span class="icon icon-puzzle main-icon text-primary"></span>';
 
@@ -433,5 +431,4 @@
     }]);
 </script>
 </body>
-
 </html>
