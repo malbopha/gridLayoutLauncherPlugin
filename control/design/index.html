@@ -76,14 +76,13 @@
                         <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i3x2')" ng-show="data.design.backgroundImage.i3x2"></span>
                     </div>
                     <div class="screen iphone pull-left text-center">
-                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('loading16x9')">
+                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('i16x9')">
                             <span ng-hide="data.design.backgroundImage.i16x9" class="add-icon">+</span>
                             <img ng-show="data.design.backgroundImage.i16x9" ng-src="{{data.design.backgroundImage.i16x9}}">
                         </a>
                         <label>16:9</label>
                         <label class="secondary">1242x2208</label>
-                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPhone 5, 6, 6 Plus, and some Android devices will fall into this category."
-                              tooltip-placement="top"></span>
+                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPhone 5, 6, 6 Plus, and some Android devices will fall into this category." tooltip-placement="top"></span>
                         <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i16x9')" ng-show="data.design.backgroundImage.i16x9"></span>
                     </div>
                     <div class="screen ipads pull-left text-center">
@@ -97,7 +96,7 @@
                         <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i4x3')" ng-show="data.design.backgroundImage.i4x3"></span>
                     </div>
                     <div class="screen tablets pull-left text-center">
-                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('loading16x10')">
+                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('i16x10')">
                             <span ng-hide="data.design.backgroundImage.i16x10" class="add-icon">+</span>
                             <img ng-show="data.design.backgroundImage.i16x10" ng-src="{{data.design.backgroundImage.i16x10}}">
                         </a>
@@ -214,7 +213,6 @@
          * Open a dailog to change the background image
          * */
         $scope.changeBackground = function (imageName) {
-            debugger;
             buildfire.imageLib.showDialog({showIcons: false, multiSelection: false}, function (err, result) {
                 if (err) {
                     return console.err('Error:', error);
@@ -242,7 +240,6 @@
          * Open a dailog to change the background image
          * */
         $scope.changeLogo = function () {
-            // ahmed hmoud
             buildfire.imageLib.showDialog({showIcons: false, multiSelection: false}, function (error, result) {
                 if (result && result.selectedFiles && result.selectedFiles.length > 0) {
                     if (!$scope.data.design) {
@@ -291,12 +288,6 @@
         $scope.showColorPicker = function ($event, colorKey) {
             $scope.colorPickerKey = $scope.colorPickerKey == colorKey ? undefined : colorKey;
             $event.stopPropagation();
-        };
-
-        var digest = function () {
-            if (!$scope.$$phase && !$scope.$root.$$phase) {
-                $scope.$apply();
-            }
         };
 
         angular.element($window).bind('mousedown', function () {
