@@ -64,13 +64,47 @@
         </div>
         <div class="main col-md-9 pull-right">
             <div class="screens clearfix">
-                <div class="screen text-center layouticon pull-left">
-                    <a class="border-grey border-radius-three default-background-hover" ng-click="changeBackground()">
-                        <span class="add-icon" ng-hide="data.design.backgroundImage">+</span>
-                        <img ng-src="{{ resizeImage(data.design.backgroundImage) }}" alt="Background Image" ng-show="data.design.backgroundImage"/>
-                    </a>
-                    <label class="secondary">750x1334</label>
-                    <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground()" ng-show="data.design.backgroundImage"></span>
+                <div class="screens flexalign clearfix">
+                    <div class="screen mostdevices pull-left text-center">
+                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('i3x2')">
+                            <span ng-hide="data.design.backgroundImage.i3x2" class="add-icon">+</span>
+                            <img ng-show="data.design.backgroundImage.i3x2" ng-src="{{data.design.backgroundImage.i3x2}}">
+                        </a>
+                        <label>3:2</label>
+                        <label class="secondary">640x960</label>
+                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPhone 3, 4, and some Android devices will fall into this category." tooltip-placement="top"></span>
+                        <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i3x2')" ng-show="data.design.backgroundImage.i3x2"></span>
+                    </div>
+                    <div class="screen iphone pull-left text-center">
+                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('i16x9')">
+                            <span ng-hide="data.design.backgroundImage.i16x9" class="add-icon">+</span>
+                            <img ng-show="data.design.backgroundImage.i16x9" ng-src="{{data.design.backgroundImage.i16x9}}">
+                        </a>
+                        <label>16:9</label>
+                        <label class="secondary">1242x2208</label>
+                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPhone 5, 6, 6 Plus, and some Android devices will fall into this category." tooltip-placement="top"></span>
+                        <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i16x9')" ng-show="data.design.backgroundImage.i16x9"></span>
+                    </div>
+                    <div class="screen ipads pull-left text-center">
+                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('i4x3')">
+                            <span ng-hide="data.design.backgroundImage.i4x3" class="add-icon">+</span>
+                            <img ng-show="data.design.backgroundImage.i4x3" ng-src="{{data.design.backgroundImage.i4x3}}">
+                        </a>
+                        <label>4:3</label>
+                        <label class="secondary">1536x2048</label>
+                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPads and some Android devices will fall into this category." tooltip-placement="top"></span>
+                        <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i4x3')" ng-show="data.design.backgroundImage.i4x3"></span>
+                    </div>
+                    <div class="screen tablets pull-left text-center">
+                        <a class="border-radius-three default-background-hover" ng-click="changeBackground('i16x10')">
+                            <span ng-hide="data.design.backgroundImage.i16x10" class="add-icon">+</span>
+                            <img ng-show="data.design.backgroundImage.i16x10" ng-src="{{data.design.backgroundImage.i16x10}}">
+                        </a>
+                        <label>16:10</label>
+                        <label class="secondary">1440x2560</label>
+                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="Some Android devices and tablets will fall into this category." tooltip-placement="top"></span>
+                        <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i16x10')" ng-show="data.design.backgroundImage.i16x10"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -97,7 +131,7 @@
     </div>
 </div>
 <script>
-    var folderPluginApp = angular.module('folderPluginDesign', ['mp.colorPicker']);
+    var folderPluginApp = angular.module('folderPluginDesign', ['ui.bootstrap', 'mp.colorPicker']);
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$window', function ($scope, $window) {
         var defaultColors = {
@@ -138,7 +172,7 @@
 
                 if (!$scope.data.design) {
                     $scope.data.design = {
-                        backgroundImage: null,
+                        backgroundImage: {},
                         selectedLayout: 1,
                         backgroundblur: 0,
                         colors: defaultColors
@@ -178,13 +212,15 @@
         /*
          * Open a dailog to change the background image
          * */
-        $scope.changeBackground = function () {
-            buildfire.imageLib.showDialog({showIcons: false, multiSelection: false}, function (error, result) {
-                if (result && result.selectedFiles && result.selectedFiles.length > 0) {
-                    if (!$scope.data.design) {
-                        $scope.data.design = {};
-                    }
-                    $scope.data.design.backgroundImage = result.selectedFiles[0];
+        $scope.changeBackground = function (imageName) {
+            buildfire.imageLib.showDialog({showIcons: false, multiSelection: false}, function (err, result) {
+                if (err) {
+                    return console.err('Error:', error);
+                }
+                if (result.selectedFiles && result.selectedFiles.length) {
+                    $scope.data.design = $scope.data.design || {};
+                    $scope.data.design.backgroundImage = $scope.data.design.backgroundImage || {};
+                    $scope.data.design.backgroundImage[imageName] = result.selectedFiles[0];
                     folderPluginShared.digest($scope);
                 }
             });
@@ -193,8 +229,10 @@
         /*
          * Delete the background and back to the default white background
          * */
-        $scope.deleteBackground = function () {
-            $scope.data.design.backgroundImage = "";
+        $scope.deleteBackground = function (imageName) {
+            $scope.data.design = $scope.data.design || {};
+            $scope.data.design.backgroundImage = $scope.data.design.backgroundImage || {};
+            $scope.data.design.backgroundImage[imageName] = undefined;
             folderPluginShared.digest($scope);
         };
 
@@ -202,7 +240,6 @@
          * Open a dailog to change the background image
          * */
         $scope.changeLogo = function () {
-            // ahmed hmoud
             buildfire.imageLib.showDialog({showIcons: false, multiSelection: false}, function (error, result) {
                 if (result && result.selectedFiles && result.selectedFiles.length > 0) {
                     if (!$scope.data.design) {
@@ -251,12 +288,6 @@
         $scope.showColorPicker = function ($event, colorKey) {
             $scope.colorPickerKey = $scope.colorPickerKey == colorKey ? undefined : colorKey;
             $event.stopPropagation();
-        };
-
-        var digest = function () {
-            if (!$scope.$$phase && !$scope.$root.$$phase) {
-                $scope.$apply();
-            }
         };
 
         angular.element($window).bind('mousedown', function () {
