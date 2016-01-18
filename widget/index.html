@@ -378,6 +378,11 @@
                 $scope.backgroundImage = undefined;
                 return;
             }
+			
+            if(typeof($scope.data.design.backgroundImage) === "string") {
+                $scope.backgroundImage = $scope.data.design.backgroundImage;
+                return;
+            }
 
             getAspectRatio();
             var imageName = "i" + aspectRatio.w + "x" + aspectRatio.h;
