@@ -178,6 +178,14 @@
                         colors: defaultColors
                     };
                 }
+				else {
+					if(typeof($scope.data.design.backgroundImage) === "string") {
+						$scope.data.design.backgroundImage = {
+							"i3x2": $scope.data.design.backgroundImage
+						}
+					}
+					folderPluginShared.digest($scope);
+				}
 
                 $scope.data.design.colors = angular.extend({}, defaultColors, $scope.data.design.colors);
             }
