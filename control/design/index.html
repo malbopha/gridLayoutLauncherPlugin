@@ -68,7 +68,7 @@
                     <div class="screen mostdevices pull-left text-center">
                         <a class="border-radius-three default-background-hover" ng-click="changeBackground('i3x2')">
                             <span ng-hide="data.design.backgroundImage.i3x2" class="add-icon">+</span>
-                            <img ng-show="data.design.backgroundImage.i3x2" ng-src="{{data.design.backgroundImage.i3x2}}">
+                            <img ng-show="data.design.backgroundImage.i3x2" ng-src="{{resizeImage(data.design.backgroundImage.i3x2)}}">
                         </a>
                         <label>3:2</label>
                         <label class="secondary">640x960</label>
@@ -78,7 +78,7 @@
                     <div class="screen iphone pull-left text-center">
                         <a class="border-radius-three default-background-hover" ng-click="changeBackground('i16x9')">
                             <span ng-hide="data.design.backgroundImage.i16x9" class="add-icon">+</span>
-                            <img ng-show="data.design.backgroundImage.i16x9" ng-src="{{data.design.backgroundImage.i16x9}}">
+                            <img ng-show="data.design.backgroundImage.i16x9" ng-src="{{resizeImage(data.design.backgroundImage.i16x9)}}">
                         </a>
                         <label>16:9</label>
                         <label class="secondary">1242x2208</label>
@@ -88,7 +88,7 @@
                     <div class="screen ipads pull-left text-center">
                         <a class="border-radius-three default-background-hover" ng-click="changeBackground('i4x3')">
                             <span ng-hide="data.design.backgroundImage.i4x3" class="add-icon">+</span>
-                            <img ng-show="data.design.backgroundImage.i4x3" ng-src="{{data.design.backgroundImage.i4x3}}">
+                            <img ng-show="data.design.backgroundImage.i4x3" ng-src="{{resizeImage(data.design.backgroundImage.i4x3)}}">
                         </a>
                         <label>4:3</label>
                         <label class="secondary">1536x2048</label>
@@ -98,7 +98,7 @@
                     <div class="screen tablets pull-left text-center">
                         <a class="border-radius-three default-background-hover" ng-click="changeBackground('i16x10')">
                             <span ng-hide="data.design.backgroundImage.i16x10" class="add-icon">+</span>
-                            <img ng-show="data.design.backgroundImage.i16x10" ng-src="{{data.design.backgroundImage.i16x10}}">
+                            <img ng-show="data.design.backgroundImage.i16x10" ng-src="{{resizeImage(data.design.backgroundImage.i16x10)}}">
                         </a>
                         <label>16:10</label>
                         <label class="secondary">1440x2560</label>
@@ -184,7 +184,6 @@
 							"i3x2": $scope.data.design.backgroundImage
 						}
 					}
-					folderPluginShared.digest($scope);
 				}
             }
 			
@@ -303,6 +302,12 @@
             $scope.colorPickerKey = undefined;
             $scope.$apply();
         });
+		
+		var digest = function () {
+            if (!$scope.$$phase && !$scope.$root.$$phase) {
+                $scope.$apply();
+            }
+		};
     }]);
 </script>
 </body>

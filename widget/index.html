@@ -19,8 +19,13 @@
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
 </head>
-<body ng-controller="folderPluginCtrl" ng-cloak
-      data-ng-attr-style="background: {{data.design.colors.backgroundColor}} url({{ cropImage(backgroundImage, {width: deviceWidth, height: deviceHeight}) }}) !important; background-size:cover !important;">
+<body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
+<style>
+    body.gridLayout {
+        background-color: {{data.design.colors.backgroundColor}} !important;
+        background-image: url({{backgroundImage}}) !important;
+    }
+</style>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
@@ -153,6 +158,8 @@
         var pagesCount = 0;
         var loadingData = true;
         var aspectRatio = undefined;
+        var deviceHeight = undefined;
+        var deviceWidth = undefined;
 
         $scope.data = folderPluginShared.getDefaultScopeData();
 
@@ -161,11 +168,11 @@
         $scope.layoutClass = folderPluginShared.getLayoutsClass();
 
         function initDeviceSize(callback) {
-            $scope.deviceHeight = window.innerHeight;
-            $scope.deviceWidth = window.innerWidth;
+            deviceHeight = window.innerHeight;
+            deviceWidth = window.innerWidth;
             $scope.sliderHeight = Math.ceil(9 * $scope.deviceWidth / 16);
             if (callback) {
-                if ($scope.deviceWidth == 0 || $scope.deviceHeight == 0) {
+                if (deviceWidth == 0 || deviceHeight == 0) {
                     setTimeout(function () {
                         initDeviceSize(callback);
                     }, 500);
@@ -380,19 +387,21 @@
             }
 			
             if(typeof($scope.data.design.backgroundImage) === "string") {
-                $scope.backgroundImage = $scope.data.design.backgroundImage;
+                $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
                 return;
             }
 
             getAspectRatio();
             var imageName = "i" + aspectRatio.w + "x" + aspectRatio.h;
             $scope.backgroundImage = backgroundImages[imageName];
-            if ($scope.backgroundImage) return;
+            if ($scope.backgroundImage) {
+                $scope.backgroundImage = $scope.cropImage(backgroundImages[imageName], {width: deviceWidth, height: deviceHeight});
+                return;
+            }
 
             for (var prop in backgroundImages) {
-                var img = backgroundImages[prop];
-                if (img) {
-                    $scope.backgroundImage = img;
+                if (backgroundImages[prop]) {
+                    $scope.backgroundImage = $scope.cropImage(backgroundImages[prop], {width: deviceWidth, height: deviceHeight});
                     return;
                 }
             }
