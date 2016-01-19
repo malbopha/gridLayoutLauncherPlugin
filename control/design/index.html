@@ -116,9 +116,9 @@
         </div>
         <div class="main col-md-9 pull-right">
             <div class="colorgrid pull-left row">
-                <div class="coloritem col-md-6 pull-left" ng-repeat="(key, value) in data.design.colors">
+                <div class="coloritem col-md-6 pull-left" ng-repeat="(key, value) in defaultColors">
                     <a class="img-thumbnail" ng-click="showColorPicker($event, key)">
-                        <span class="color btn-primary border-radius-three border-grey" ng-style="{'background-color': data.design.colors[key] || colorTemplate.initialValue }"></span>
+                        <span class="color btn-primary border-radius-three border-grey" ng-style="{'background-color': data.design.colors[key]}"></span>
                     </a>
                     <label ng-click="showColorPicker($event, key)">{{colorLabels[key]}}</label>
                     <div class="color-picker" ng-show="colorPickerKey === key" ng-mousedown="$event.stopPropagation();">
@@ -134,7 +134,7 @@
     var folderPluginApp = angular.module('folderPluginDesign', ['ui.bootstrap', 'mp.colorPicker']);
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$window', function ($scope, $window) {
-        var defaultColors = {
+        $scope.defaultColors = {
             "backgroundColor": "",
             "bodyText": "",
             "icons": ""
@@ -175,7 +175,7 @@
                         backgroundImage: {},
                         selectedLayout: 1,
                         backgroundblur: 0,
-                        colors: defaultColors
+                        colors: {}
                     };
                 }
 				else {
@@ -186,11 +186,12 @@
 					}
 					folderPluginShared.digest($scope);
 				}
-
-                $scope.data.design.colors = angular.extend({}, defaultColors, $scope.data.design.colors);
             }
-
-            /*
+			
+			$scope.data.design = $scope.data.design || {};
+            $scope.data.design.colors = $scope.data.design.colors || {};
+			
+			/*
              * watch for changes in data and trigger the saveData function on change
              * */
             $scope.$watch('data', saveData, true);
