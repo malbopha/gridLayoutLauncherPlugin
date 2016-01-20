@@ -118,17 +118,18 @@
         <div class="main col-md-9 pull-right">
             <div class="radio radio-primary radio-inline">
                 <input id="appearance" type="radio" name="colorType" ng-checked="colorType=='A'" ng-click="setColorType('A')"/>
-                <label for="appearance">Inherit color theme from Appearance</label>
+                <label for="appearance">Inherit Appearance Theme</label>
             </div>
             <div class="radio radio-primary radio-inline">
                 <input id="customColor" type="radio" name="colorType" ng-checked="colorType=='C'" ng-click="setColorType('C')"/>
-                <label for="customColor">Choose custom colors</label>
+                <label for="customColor">Custom Theme</label>
             </div>
         </div>
     </div>
+    <hr class="none">
     <div class="item clearfix row margin-bottom-twenty" ng-if="colorType=='C'">
-        <div class="main col-md-8 pull-right">
-            <div class="colorgrid pull-left row">
+        <div class="main col-md-9 pull-right">
+            <div class="colorgrid pull-left">
                 <div class="colorgrid pull-left row">
                     <div class="coloritem col-md-6 pull-left" ng-repeat="(key, value) in defaultColors">
                         <a class="img-thumbnail" ng-click="showColorPicker($event, key)">
