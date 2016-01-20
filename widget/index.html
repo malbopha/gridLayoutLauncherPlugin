@@ -25,6 +25,14 @@
         background-color: {{data.design.colors.backgroundColor}} !important;
         background-image: url({{backgroundImage}}) !important;
     }
+
+    div.text-holder p {
+        color: {{data.design.colors.bodyText}} !important;
+    }
+
+    .icon, .glyphicon, .icon:hover {
+        color: {{data.design.colors.icons}} !important;
+    }
 </style>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">

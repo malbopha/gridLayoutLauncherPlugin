@@ -82,7 +82,8 @@
                         </a>
                         <label>16:9</label>
                         <label class="secondary">1242x2208</label>
-                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPhone 5, 6, 6 Plus, and some Android devices will fall into this category." tooltip-placement="top"></span>
+                        <span class="tip btn-info-icon btn-primary transition-third" tooltip="iPhone 5, 6, 6 Plus, and some Android devices will fall into this category."
+                              tooltip-placement="top"></span>
                         <span class="icon btn-icon btn-delete-icon btn-danger transition-third" ng-click="deleteBackground('i16x9')" ng-show="data.design.backgroundImage.i16x9"></span>
                     </div>
                     <div class="screen ipads pull-left text-center">
@@ -110,20 +111,35 @@
         </div>
     </div>
     <hr class="none">
-    <div class="item clearfix row margin-bottom-twenty">
+    <div class="item clearfix row margin-bottom-ten">
         <div class="labels col-md-3 padding-right-zero pull-left">
             <span>Theme Colors</span>
         </div>
         <div class="main col-md-9 pull-right">
-            <div class="colorgrid pull-left row">
-                <div class="coloritem col-md-6 pull-left" ng-repeat="(key, value) in defaultColors">
-                    <a class="img-thumbnail" ng-click="showColorPicker($event, key)">
-                        <span class="color btn-primary border-radius-three border-grey" ng-style="{'background-color': data.design.colors[key]}"></span>
-                    </a>
-                    <label ng-click="showColorPicker($event, key)">{{colorLabels[key]}}</label>
-                    <div class="color-picker" ng-show="colorPickerKey === key" ng-mousedown="$event.stopPropagation();">
-                        <color-picker ng-model="data.design.colors[key]"></color-picker>
-                        <input type="text" class="form-control" ng-model="data.design.colors[key]" ng-init="">
+            <div class="radio radio-primary radio-inline">
+                <input id="appearance" type="radio" name="colorType" ng-checked="colorType=='A'" ng-click="setColorType('A')"/>
+                <label for="appearance">Inherit Appearance Theme</label>
+            </div>
+            <div class="radio radio-primary radio-inline">
+                <input id="customColor" type="radio" name="colorType" ng-checked="colorType=='C'" ng-click="setColorType('C')"/>
+                <label for="customColor">Custom Theme</label>
+            </div>
+        </div>
+    </div>
+    <hr class="none">
+    <div class="item clearfix row margin-bottom-twenty" ng-if="colorType=='C'">
+        <div class="main col-md-9 pull-right">
+            <div class="colorgrid pull-left">
+                <div class="colorgrid pull-left row">
+                    <div class="coloritem col-md-6 pull-left" ng-repeat="(key, value) in defaultColors">
+                        <a class="img-thumbnail" ng-click="showColorPicker($event, key)">
+                            <span class="color btn-primary border-radius-three border-grey" ng-style="{'background-color': data.design.colors[key]}"></span>
+                        </a>
+                        <label ng-click="showColorPicker($event, key)">{{colorLabels[key]}}</label>
+                        <div class="color-picker" ng-show="colorPickerKey === key" ng-mousedown="$event.stopPropagation();">
+                            <color-picker ng-model="data.design.colors[key]"></color-picker>
+                            <input type="text" class="form-control" ng-model="data.design.colors[key]" ng-init="">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -178,19 +194,21 @@
                         colors: {}
                     };
                 }
-				else {
-					if(typeof($scope.data.design.backgroundImage) === "string") {
-						$scope.data.design.backgroundImage = {
-							"i3x2": $scope.data.design.backgroundImage
-						}
-					}
-				}
+                else {
+                    if (typeof($scope.data.design.backgroundImage) === "string") {
+                        $scope.data.design.backgroundImage = {
+                            "i3x2": $scope.data.design.backgroundImage
+                        }
+                    }
+                }
             }
-			
-			$scope.data.design = $scope.data.design || {};
+
+            $scope.data.design = $scope.data.design || {};
             $scope.data.design.colors = $scope.data.design.colors || {};
-			
-			/*
+
+            $scope.colorType = angular.equals({}, $scope.data.design.colors) ? "A" : "C";
+
+            /*
              * watch for changes in data and trigger the saveData function on change
              * */
             $scope.$watch('data', saveData, true);
@@ -298,16 +316,22 @@
             $event.stopPropagation();
         };
 
+        $scope.setColorType = function (colorType) {
+            if ($scope.colorType === colorType) return;
+            $scope.colorType = colorType;
+            $scope.data.design.colors = {};
+        };
+
         angular.element($window).bind('mousedown', function () {
             $scope.colorPickerKey = undefined;
             $scope.$apply();
         });
-		
-		var digest = function () {
+
+        var digest = function () {
             if (!$scope.$$phase && !$scope.$root.$$phase) {
                 $scope.$apply();
             }
-		};
+        };
     }]);
 </script>
 </body>
