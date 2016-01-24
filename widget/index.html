@@ -232,8 +232,6 @@
                 };
             }
 
-            prepareStyle();
-
             setBackgroundImage();
 
             if (data.design.selectedLayout != 7) {
@@ -393,7 +391,7 @@
                 $scope.backgroundImage = undefined;
                 return;
             }
-			
+
             if(typeof($scope.data.design.backgroundImage) === "string") {
                 $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
                 return;
@@ -430,31 +428,6 @@
 
         function gcd(a, b) {
             return (b == 0) ? a : gcd(b, a % b);
-        }
-
-        function prepareStyle() {
-            var css;
-            if ($scope.data.design.colors) {
-                if ($scope.data.design.colors.bodyText)
-                    css = '.plugin-slide p.ellipsis-two {color:' + $scope.data.design.colors.bodyText + ' !important;}';
-
-                if ($scope.data.design.colors.icons)
-                    css += '.plugin-slide .icon, .plugin-slide .icon:hover {color:' + $scope.data.design.colors.icons + ' !important;}';
-            }
-
-            if (!css) return;
-
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var style = document.createElement('style');
-
-            style.type = 'text/css';
-            if (style.styleSheet) {
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            head.appendChild(style);
         }
 
         var prepareSliderHTML = function () {
