@@ -165,14 +165,17 @@
         var view = null;
         var pagesCount = 0;
         var loadingData = true;
-        var aspectRatio = undefined;
         var deviceHeight = undefined;
         var deviceWidth = undefined;
+        var devicesAspectRatios = [
+            {mediaQuery: 'screen and (device-aspect-ratio:3/2)', imageName: 'i3x2'},
+            {mediaQuery: 'screen and (device-aspect-ratio:16/9)', imageName: 'i16x9'},
+            {mediaQuery: 'screen and (device-aspect-ratio:4/3)', imageName: 'i4x3'},
+            {mediaQuery: 'screen and (device-aspect-ratio:16/10)', imageName: 'i3x2'}
+        ];
 
         $scope.data = folderPluginShared.getDefaultScopeData();
-
         $scope.pageSize = folderPluginShared.getLayoutsPageSize();
-
         $scope.layoutClass = folderPluginShared.getLayoutsClass();
 
         function initDeviceSize(callback) {
@@ -290,7 +293,7 @@
                     bind(result.data);
                 }
             }
-        };
+        }
 
         /*
          * Go pull saved data
@@ -387,47 +390,22 @@
 
         function setBackgroundImage() {
             var backgroundImages = $scope.data.design.backgroundImage;
-            if(!backgroundImages) {
-                $scope.backgroundImage = undefined;
-                return;
+            var backgroundImage = undefined;
+
+            if (!backgroundImages) return;
+
+            if (typeof($scope.data.design.backgroundImage) === "string") {
+                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
+            }
+            else {
+                devicesAspectRatios.forEach(function (aspectRatio) {
+                    if (window.matchMedia(aspectRatio.mediaQuery).matches) {
+                        backgroundImage = $scope.cropImage(backgroundImages[aspectRatio.imageName], {width: deviceWidth, height: deviceHeight});
+                    }
+                });
             }
 
-            if(typeof($scope.data.design.backgroundImage) === "string") {
-                $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
-                return;
-            }
-
-            getAspectRatio();
-            var imageName = "i" + aspectRatio.w + "x" + aspectRatio.h;
-            $scope.backgroundImage = backgroundImages[imageName];
-            if ($scope.backgroundImage) {
-                $scope.backgroundImage = $scope.cropImage(backgroundImages[imageName], {width: deviceWidth, height: deviceHeight});
-                return;
-            }
-
-            for (var prop in backgroundImages) {
-                if (backgroundImages[prop]) {
-                    $scope.backgroundImage = $scope.cropImage(backgroundImages[prop], {width: deviceWidth, height: deviceHeight});
-                    return;
-                }
-            }
-            $scope.backgroundImage = undefined;
-        }
-
-        function getAspectRatio() {
-            if (aspectRatio) return;
-            var w = screen.width;
-            var h = screen.height;
-            var r = gcd(w, h);
-
-            aspectRatio = {
-                w: w / r,
-                h: h / r
-            }
-        }
-
-        function gcd(a, b) {
-            return (b == 0) ? a : gcd(b, a % b);
+            $scope.backgroundImage = backgroundImage;
         }
 
         var prepareSliderHTML = function () {
