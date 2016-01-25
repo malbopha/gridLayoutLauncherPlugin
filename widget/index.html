@@ -24,6 +24,7 @@
     body.gridLayout {
         background-color: {{data.design.colors.backgroundColor}} !important;
         background-image: url({{backgroundImage}}) !important;
+        background-size: cover !important;
     }
 
     div.text-holder p {
@@ -165,14 +166,17 @@
         var view = null;
         var pagesCount = 0;
         var loadingData = true;
-        var aspectRatio = undefined;
         var deviceHeight = undefined;
         var deviceWidth = undefined;
+        var devicesAspectRatios = [
+            {mediaQuery: 'screen and (device-aspect-ratio:3/2)', imageName: 'i3x2'},
+            {mediaQuery: 'screen and (device-aspect-ratio:16/9)', imageName: 'i16x9'},
+            {mediaQuery: 'screen and (device-aspect-ratio:4/3)', imageName: 'i4x3'},
+            {mediaQuery: 'screen and (device-aspect-ratio:16/10)', imageName: 'i3x2'}
+        ];
 
         $scope.data = folderPluginShared.getDefaultScopeData();
-
         $scope.pageSize = folderPluginShared.getLayoutsPageSize();
-
         $scope.layoutClass = folderPluginShared.getLayoutsClass();
 
         function initDeviceSize(callback) {
@@ -232,8 +236,6 @@
                 };
             }
 
-            prepareStyle();
-
             setBackgroundImage();
 
             if (data.design.selectedLayout != 7) {
@@ -292,7 +294,7 @@
                     bind(result.data);
                 }
             }
-        };
+        }
 
         /*
          * Go pull saved data
@@ -389,72 +391,22 @@
 
         function setBackgroundImage() {
             var backgroundImages = $scope.data.design.backgroundImage;
-            if(!backgroundImages) {
-                $scope.backgroundImage = undefined;
-                return;
-            }
-			
-            if(typeof($scope.data.design.backgroundImage) === "string") {
-                $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
-                return;
-            }
+            var backgroundImage = undefined;
 
-            getAspectRatio();
-            var imageName = "i" + aspectRatio.w + "x" + aspectRatio.h;
-            $scope.backgroundImage = backgroundImages[imageName];
-            if ($scope.backgroundImage) {
-                $scope.backgroundImage = $scope.cropImage(backgroundImages[imageName], {width: deviceWidth, height: deviceHeight});
-                return;
+            if (!backgroundImages) return;
+
+            if (typeof($scope.data.design.backgroundImage) === "string") {
+                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
+            }
+            else {
+                devicesAspectRatios.forEach(function (aspectRatio) {
+                    if (window.matchMedia(aspectRatio.mediaQuery).matches) {
+                        backgroundImage = $scope.cropImage(backgroundImages[aspectRatio.imageName], {width: deviceWidth, height: deviceHeight});
+                    }
+                });
             }
 
-            for (var prop in backgroundImages) {
-                if (backgroundImages[prop]) {
-                    $scope.backgroundImage = $scope.cropImage(backgroundImages[prop], {width: deviceWidth, height: deviceHeight});
-                    return;
-                }
-            }
-            $scope.backgroundImage = undefined;
-        }
-
-        function getAspectRatio() {
-            if (aspectRatio) return;
-            var w = screen.width;
-            var h = screen.height;
-            var r = gcd(w, h);
-
-            aspectRatio = {
-                w: w / r,
-                h: h / r
-            }
-        }
-
-        function gcd(a, b) {
-            return (b == 0) ? a : gcd(b, a % b);
-        }
-
-        function prepareStyle() {
-            var css;
-            if ($scope.data.design.colors) {
-                if ($scope.data.design.colors.bodyText)
-                    css = '.plugin-slide p.ellipsis-two {color:' + $scope.data.design.colors.bodyText + ' !important;}';
-
-                if ($scope.data.design.colors.icons)
-                    css += '.plugin-slide .icon, .plugin-slide .icon:hover {color:' + $scope.data.design.colors.icons + ' !important;}';
-            }
-
-            if (!css) return;
-
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var style = document.createElement('style');
-
-            style.type = 'text/css';
-            if (style.styleSheet) {
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            head.appendChild(style);
+            $scope.backgroundImage = backgroundImage;
         }
 
         var prepareSliderHTML = function () {
