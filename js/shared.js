@@ -43,7 +43,8 @@ folderPluginShared.getDefaultScopeData = function () {
             backgroundImage: null,
             logoImage: null,
             selectedLayout: 1,
-            backgroundblur: 0
+            backgroundblur: 0,
+            colorType: 'A'
         }
     };
 };

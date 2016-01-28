@@ -22,17 +22,17 @@
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
 <style>
     body.gridLayout {
-    background-color: {{data.design.colors.backgroundColor}} !important;
-    background-image: url({{backgroundImage}}) !important;
-    background-size: cover !important;
+        background-color: {{data.design.colorType === 'C' && data.design.colors.backgroundColor}} !important;
+        background-image: url({{backgroundImage}}) !important;
+        background-size: cover !important;
     }
 
     div.text-holder p {
-    color: {{data.design.colors.bodyText}} !important;
+        color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
     }
 
     .icon, .glyphicon, .icon:hover {
-    color: {{data.design.colors.icons}} !important;
+        color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
     }
 </style>
 <div class="holder padding-zero">
