@@ -168,7 +168,9 @@
             errorClass: 'error', // in case of loading image failure what class should be added (default = null)
             successClass: 'success', // in case of loading image success what class should be added (default = null)
             onError: function(image){}, // function fired on loading error
-            onSuccess: function(image){} // function fired on loading success
+            onSuccess: function(image){
+                console.log(image);
+            } // function fired on loading success
            // container: angular.element(scrollable) // if scrollable container is not $window then provide it here
         });
     }])
@@ -405,7 +407,7 @@
                 $scope.backgroundImage = undefined;
                 return;
             }
-			
+
             if(typeof($scope.data.design.backgroundImage) === "string") {
                 $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
                 return;
