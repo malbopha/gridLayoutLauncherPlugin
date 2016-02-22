@@ -31,12 +31,11 @@
         color: {{data.design.colors.icons}} !important;
     }
 </style>
-<div class="overlay background"  ng-if="backgroundImage">
-    <img src='images/4x3.png' lazy-img="{{backgroundImage}}" style="position: absolute;">
+<div class="overlay background" ng-if="data.design.selectedLayout !== 7">
+    <img ng-src="{{backgroundImage}}" style="position: absolute;">
 </div>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
-
         <div class="menu-links">
             <a class="menu-item clearfix" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
                 <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
@@ -55,7 +54,7 @@
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img lazy-img="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
                             </div>
                         </td>
                     </tr>
@@ -161,6 +160,18 @@
     };
 
     var folderPluginApp = angular.module('folderPlugin', ['angularLazyImg']);
+
+    folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
+       // var scrollable = document.querySelector('#scrollable');
+        lazyImgConfigProvider.setOptions({
+            offset: 100, // how early you want to load image (default = 100)
+            errorClass: 'error', // in case of loading image failure what class should be added (default = null)
+            successClass: 'success', // in case of loading image success what class should be added (default = null)
+            onError: function(image){}, // function fired on loading error
+            onSuccess: function(image){} // function fired on loading success
+           // container: angular.element(scrollable) // if scrollable container is not $window then provide it here
+        });
+    }])
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
         var view = null;
