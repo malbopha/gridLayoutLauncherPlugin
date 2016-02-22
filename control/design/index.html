@@ -117,17 +117,17 @@
         </div>
         <div class="main col-md-9 pull-right">
             <div class="radio radio-primary radio-inline">
-                <input id="appearance" type="radio" name="colorType" ng-checked="colorType=='A'" ng-click="setColorType('A')"/>
+                <input id="appearance" type="radio" name="colorType" ng-checked="data.design.colorType=='A'" ng-click="setColorType('A')"/>
                 <label for="appearance">Inherit Appearance Theme</label>
             </div>
             <div class="radio radio-primary radio-inline">
-                <input id="customColor" type="radio" name="colorType" ng-checked="colorType=='C'" ng-click="setColorType('C')"/>
+                <input id="customColor" type="radio" name="colorType" ng-checked="data.design.colorType=='C'" ng-click="setColorType('C')"/>
                 <label for="customColor">Custom Theme</label>
             </div>
         </div>
     </div>
     <hr class="none">
-    <div class="item clearfix row margin-bottom-twenty" ng-if="colorType=='C'">
+    <div class="item clearfix row margin-bottom-twenty" ng-if="data.design.colorType=='C'">
         <div class="main col-md-9 pull-right">
             <div class="colorgrid pull-left">
                 <div class="colorgrid pull-left row">
@@ -151,9 +151,9 @@
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$window', function ($scope, $window) {
         $scope.defaultColors = {
-            "backgroundColor": "",
-            "bodyText": "",
-            "icons": ""
+            "backgroundColor": "#FFFFFF",
+            "bodyText": "#32373a",
+            "icons": "#09a3ee"
         };
 
         $scope.availableLayouts = folderPluginShared.getLayouts();

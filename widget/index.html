@@ -24,11 +24,11 @@
 <style>
 
     div.text-holder p {
-        color: {{data.design.colors.bodyText}} !important;
+        color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
     }
 
     .icon, .glyphicon, .icon:hover {
-        color: {{data.design.colors.icons}} !important;
+        color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
     }
 </style>
 <div class="overlay background" ng-if="data.design.selectedLayout !== 7">
@@ -181,14 +181,12 @@
         var view = null;
         var pagesCount = 0;
         var loadingData = true;
-        var aspectRatio = undefined;
         var deviceHeight = undefined;
         var deviceWidth = undefined;
+        var matchedBackgroundName = undefined;
 
         $scope.data = folderPluginShared.getDefaultScopeData();
-
         $scope.pageSize = folderPluginShared.getLayoutsPageSize();
-
         $scope.layoutClass = folderPluginShared.getLayoutsClass();
 
         function initDeviceSize(callback) {
@@ -248,8 +246,6 @@
                 };
             }
 
-            prepareStyle();
-
             setBackgroundImage();
 
             if (data.design.selectedLayout != 7) {
@@ -308,7 +304,7 @@
                     bind(result.data);
                 }
             }
-        };
+        }
 
         /*
          * Go pull saved data
@@ -405,72 +401,108 @@
 
         function setBackgroundImage() {
             var backgroundImages = $scope.data.design.backgroundImage;
-            if(!backgroundImages) {
-                $scope.backgroundImage = undefined;
-                return;
-            }
+            var backgroundImage = undefined;
 
-            if(typeof($scope.data.design.backgroundImage) === "string") {
-                $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
-                return;
-            }
+            if (!backgroundImages) return;
 
-            getAspectRatio();
-            var imageName = "i" + aspectRatio.w + "x" + aspectRatio.h;
-            $scope.backgroundImage = backgroundImages[imageName];
-            if ($scope.backgroundImage) {
-                $scope.backgroundImage = $scope.cropImage(backgroundImages[imageName], {width: deviceWidth, height: deviceHeight});
-                return;
+            if (typeof($scope.data.design.backgroundImage) === "string") {
+                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
             }
+            else {
+                if (!matchedBackgroundName) {
+                    matchedBackgroundName = getByMediaQuery(backgroundImages);
 
-            for (var prop in backgroundImages) {
-                if (backgroundImages[prop]) {
-                    $scope.backgroundImage = $scope.cropImage(backgroundImages[prop], {width: deviceWidth, height: deviceHeight});
-                    return;
+                    if (!matchedBackgroundName) {
+                        matchedBackgroundName = calcMatchedBackgroundImage();
+                    }
+                }
+                console.log('matchedBackgroundName: ', matchedBackgroundName);
+
+                if(matchedBackgroundName){
+                    backgroundImage = $scope.cropImage(backgroundImages[matchedBackgroundName], {
+                        width: deviceWidth,
+                        height: deviceHeight
+                    });
                 }
             }
-            $scope.backgroundImage = undefined;
+
+            $scope.backgroundImage = backgroundImage;
+        }
+
+        function getByMediaQuery(){
+            var devicesAspectRatios = [
+                {
+                    mediaQueries: ['screen and (device-aspect-ratio:3/2)'],
+                    imageName: 'i3x2'
+                },
+                {
+                    mediaQueries: [
+                        'screen and (device-aspect-ratio:16/9)',
+                        'screen and (device-aspect-ratio: 40/71)',
+                        'screen and (device-aspect-ratio: 667/375)'
+                    ],
+                    imageName: 'i16x9'
+                },
+                {
+                    mediaQueries: ['screen and (device-aspect-ratio:4/3)', 'screen and (device-aspect-ratio: 3/4)'],
+                    imageName: 'i4x3'
+                },
+                {
+                    mediaQueries: ['screen and (device-aspect-ratio:16/10)'],
+                    imageName: 'i16x10'
+                }
+            ];
+
+            var backgroundImage = undefined;
+            devicesAspectRatios.forEach(function (aspectRatio) {
+
+                aspectRatio.mediaQueries.forEach(function (mediaQuery) {
+                    if (window.matchMedia(mediaQuery).matches) {
+                        console.log('match media query: ', mediaQuery);
+                        backgroundImage = aspectRatio.imageName;
+                    }
+                });
+            });
+
+            return backgroundImage;
+        }
+
+        function calcMatchedBackgroundImage(){
+            console.log('calc best aspect ratio');
+            var aspectRatios = [
+                {w: 4, h: 3},
+                {w: 3, h: 2},
+                {w: 16, h: 10},
+                {w: 16, h: 9}
+            ];
+            var aspectRatio = getAspectRatio();
+            aspectRatios.forEach(function (ratio) {
+                ratio.diff = Math.abs((ratio.w / ratio.h) - aspectRatio);
+            });
+
+            aspectRatios.sort(function (a, b) {
+                return a.diff - b.diff;
+            });
+
+            return "i" + aspectRatios[0].w + "x" + aspectRatios[0].h;
         }
 
         function getAspectRatio() {
-            if (aspectRatio) return;
             var w = screen.width;
             var h = screen.height;
             var r = gcd(w, h);
-
-            aspectRatio = {
-                w: w / r,
-                h: h / r
+            w = w / r;
+            h = h / r;
+            if (w < h) {
+                w = h;
+                h = w;
             }
+
+            return w / h;
         }
 
         function gcd(a, b) {
             return (b == 0) ? a : gcd(b, a % b);
-        }
-
-        function prepareStyle() {
-            var css;
-            if ($scope.data.design.colors) {
-                if ($scope.data.design.colors.bodyText)
-                    css = '.plugin-slide p.ellipsis-two {color:' + $scope.data.design.colors.bodyText + ' !important;}';
-
-                if ($scope.data.design.colors.icons)
-                    css += '.plugin-slide .icon, .plugin-slide .icon:hover {color:' + $scope.data.design.colors.icons + ' !important;}';
-            }
-
-            if (!css) return;
-
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var style = document.createElement('style');
-
-            style.type = 'text/css';
-            if (style.styleSheet) {
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            head.appendChild(style);
         }
 
         var prepareSliderHTML = function () {
