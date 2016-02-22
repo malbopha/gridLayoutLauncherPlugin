@@ -32,7 +32,7 @@
     }
 </style>
 <div class="overlay background" ng-if="data.design.selectedLayout !== 7">
-    <img ng-src="{{backgroundImage}}" style="position: absolute;">
+    <img lazy-img="{{backgroundImage}}" style="position: absolute;">
 </div>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
@@ -54,7 +54,7 @@
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img lazy-img="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
                             </div>
                         </td>
                     </tr>
@@ -164,10 +164,12 @@
     folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
        // var scrollable = document.querySelector('#scrollable');
         lazyImgConfigProvider.setOptions({
-            offset: 100, // how early you want to load image (default = 100)
+            offset: 30, // how early you want to load image (default = 100)
             errorClass: 'error', // in case of loading image failure what class should be added (default = null)
             successClass: 'success', // in case of loading image success what class should be added (default = null)
-            onError: function(image){}, // function fired on loading error
+            onError: function(image){
+                console.log(image);
+            }, // function fired on loading error
             onSuccess: function(image){
                 console.log(image);
             } // function fired on loading success
