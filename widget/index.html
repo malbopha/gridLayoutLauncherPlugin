@@ -8,24 +8,35 @@
     <link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet"/>
     <link rel="stylesheet" href="../../../styles/helper.css">
     <link rel="stylesheet" href="../../../styles/siteIcons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- JS -->
     <script src="../../../scripts/angular/angular.min.js"></script>
     <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-
     <script type="text/javascript" src="../../../scripts/buildfire.js"></script>
     <script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
+    <script src="assets/js/angular-lazy-img.js"></script>
+
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
 <style>
     body.gridLayout {
-        background-color: {{data.design.colors.backgroundColor}} !important;
-        background-image: url({{backgroundImage}}) !important;
+          background-color: {{data.design.colors.backgroundColor}} !important;
+          background-image: url({{backgroundImage}}) !important;
+    }
+    div.text-holder p {
+        color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
+    }
+
+    .icon, .glyphicon, .icon:hover {
+        color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
     }
 </style>
+<!--<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
+    <img ng-src="{{backgroundImage}}" style="position: absolute;">
+</div>-->
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
@@ -151,20 +162,34 @@
         return [4, 2, 3, 1, 5, 6, 7];
     };
 
-    var folderPluginApp = angular.module('folderPlugin', []);
+    var folderPluginApp = angular.module('folderPlugin', ['angularLazyImg']);
+
+    folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
+       // var scrollable = document.querySelector('#scrollable');
+        lazyImgConfigProvider.setOptions({
+            offset: 30, // how early you want to load image (default = 100)
+            errorClass: 'error', // in case of loading image failure what class should be added (default = null)
+            successClass: 'success', // in case of loading image success what class should be added (default = null)
+            onError: function(image){
+                console.log(image);
+            }, // function fired on loading error
+            onSuccess: function(image){
+                console.log(image);
+            } // function fired on loading success
+           // container: angular.element(scrollable) // if scrollable container is not $window then provide it here
+        });
+    }])
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
         var view = null;
         var pagesCount = 0;
         var loadingData = true;
-        var aspectRatio = undefined;
         var deviceHeight = undefined;
         var deviceWidth = undefined;
+        var matchedBackgroundName = undefined;
 
         $scope.data = folderPluginShared.getDefaultScopeData();
-
         $scope.pageSize = folderPluginShared.getLayoutsPageSize();
-
         $scope.layoutClass = folderPluginShared.getLayoutsClass();
 
         function initDeviceSize(callback) {
@@ -224,8 +249,6 @@
                 };
             }
 
-            prepareStyle();
-
             setBackgroundImage();
 
             if (data.design.selectedLayout != 7) {
@@ -284,7 +307,7 @@
                     bind(result.data);
                 }
             }
-        };
+        }
 
         /*
          * Go pull saved data
@@ -381,72 +404,108 @@
 
         function setBackgroundImage() {
             var backgroundImages = $scope.data.design.backgroundImage;
-            if(!backgroundImages) {
-                $scope.backgroundImage = undefined;
-                return;
-            }
-			
-            if(typeof($scope.data.design.backgroundImage) === "string") {
-                $scope.backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
-                return;
-            }
+            var backgroundImage = undefined;
 
-            getAspectRatio();
-            var imageName = "i" + aspectRatio.w + "x" + aspectRatio.h;
-            $scope.backgroundImage = backgroundImages[imageName];
-            if ($scope.backgroundImage) {
-                $scope.backgroundImage = $scope.cropImage(backgroundImages[imageName], {width: deviceWidth, height: deviceHeight});
-                return;
-            }
+            if (!backgroundImages) return;
 
-            for (var prop in backgroundImages) {
-                if (backgroundImages[prop]) {
-                    $scope.backgroundImage = $scope.cropImage(backgroundImages[prop], {width: deviceWidth, height: deviceHeight});
-                    return;
+            if (typeof($scope.data.design.backgroundImage) === "string") {
+                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
+            }
+            else {
+                if (!matchedBackgroundName) {
+                    matchedBackgroundName = getByMediaQuery(backgroundImages);
+
+                    if (!matchedBackgroundName) {
+                        matchedBackgroundName = calcMatchedBackgroundImage();
+                    }
+                }
+                console.log('matchedBackgroundName: ', matchedBackgroundName);
+
+                if(matchedBackgroundName){
+                    backgroundImage = $scope.cropImage(backgroundImages[matchedBackgroundName], {
+                        width: deviceWidth,
+                        height: deviceHeight
+                    });
                 }
             }
-            $scope.backgroundImage = undefined;
+
+            $scope.backgroundImage = backgroundImage;
+        }
+
+        function getByMediaQuery(){
+            var devicesAspectRatios = [
+                {
+                    mediaQueries: ['screen and (device-aspect-ratio:3/2)'],
+                    imageName: 'i3x2'
+                },
+                {
+                    mediaQueries: [
+                        'screen and (device-aspect-ratio:16/9)',
+                        'screen and (device-aspect-ratio: 40/71)',
+                        'screen and (device-aspect-ratio: 667/375)'
+                    ],
+                    imageName: 'i16x9'
+                },
+                {
+                    mediaQueries: ['screen and (device-aspect-ratio:4/3)', 'screen and (device-aspect-ratio: 3/4)'],
+                    imageName: 'i4x3'
+                },
+                {
+                    mediaQueries: ['screen and (device-aspect-ratio:16/10)'],
+                    imageName: 'i16x10'
+                }
+            ];
+
+            var backgroundImage = undefined;
+            devicesAspectRatios.forEach(function (aspectRatio) {
+
+                aspectRatio.mediaQueries.forEach(function (mediaQuery) {
+                    if (window.matchMedia(mediaQuery).matches) {
+                        console.log('match media query: ', mediaQuery);
+                        backgroundImage = aspectRatio.imageName;
+                    }
+                });
+            });
+
+            return backgroundImage;
+        }
+
+        function calcMatchedBackgroundImage(){
+            console.log('calc best aspect ratio');
+            var aspectRatios = [
+                {w: 4, h: 3},
+                {w: 3, h: 2},
+                {w: 16, h: 10},
+                {w: 16, h: 9}
+            ];
+            var aspectRatio = getAspectRatio();
+            aspectRatios.forEach(function (ratio) {
+                ratio.diff = Math.abs((ratio.w / ratio.h) - aspectRatio);
+            });
+
+            aspectRatios.sort(function (a, b) {
+                return a.diff - b.diff;
+            });
+
+            return "i" + aspectRatios[0].w + "x" + aspectRatios[0].h;
         }
 
         function getAspectRatio() {
-            if (aspectRatio) return;
             var w = screen.width;
             var h = screen.height;
             var r = gcd(w, h);
-
-            aspectRatio = {
-                w: w / r,
-                h: h / r
+            w = w / r;
+            h = h / r;
+            if (w < h) {
+                w = h;
+                h = w;
             }
+
+            return w / h;
         }
 
         function gcd(a, b) {
             return (b == 0) ? a : gcd(b, a % b);
-        }
-
-        function prepareStyle() {
-            var css;
-            if ($scope.data.design.colors) {
-                if ($scope.data.design.colors.bodyText)
-                    css = '.plugin-slide p.ellipsis-two {color:' + $scope.data.design.colors.bodyText + ' !important;}';
-
-                if ($scope.data.design.colors.icons)
-                    css += '.plugin-slide .icon, .plugin-slide .icon:hover {color:' + $scope.data.design.colors.icons + ' !important;}';
-            }
-
-            if (!css) return;
-
-            var head = document.head || document.getElementsByTagName('head')[0];
-            var style = document.createElement('style');
-
-            style.type = 'text/css';
-            if (style.styleSheet) {
-                style.styleSheet.cssText = css;
-            } else {
-                style.appendChild(document.createTextNode(css));
-            }
-
-            head.appendChild(style);
         }
 
         var prepareSliderHTML = function () {
