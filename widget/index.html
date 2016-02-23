@@ -54,7 +54,7 @@
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img lazy-img="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
                             </div>
                         </td>
                     </tr>
@@ -406,7 +406,7 @@
             if (!backgroundImages) return;
 
             if (typeof($scope.data.design.backgroundImage) === "string") {
-                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: 342, height: 545});
+                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
             }
             else {
                 if (!matchedBackgroundName) {
@@ -420,8 +420,8 @@
 
                 if(matchedBackgroundName){
                     backgroundImage = $scope.cropImage(backgroundImages[matchedBackgroundName], {
-                        width: 342,
-                        height: 545
+                        width: deviceWidth,
+                        height: deviceHeight
                     });
                 }
             }
