@@ -32,7 +32,7 @@
     }
 </style>
 <div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
-    <img lazy-img="{{backgroundImage}}" style="position: absolute;">
+    <img ng-src="{{backgroundImage}}" style="position: absolute;">
 </div>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
