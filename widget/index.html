@@ -406,7 +406,7 @@
             if (!backgroundImages) return;
 
             if (typeof($scope.data.design.backgroundImage) === "string") {
-                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
+                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: 342, height: 545});
             }
             else {
                 if (!matchedBackgroundName) {
@@ -420,8 +420,8 @@
 
                 if(matchedBackgroundName){
                     backgroundImage = $scope.cropImage(backgroundImages[matchedBackgroundName], {
-                        width: deviceWidth,
-                        height: deviceHeight
+                        width: 342,
+                        height: 545
                     });
                 }
             }
