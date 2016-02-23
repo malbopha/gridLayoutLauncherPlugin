@@ -22,7 +22,6 @@ module.exports = function(config) {
       'test/assets/bower_components/angular-bootstrap/ui-bootstrap.min.js',
       'test/assets/bower_components/angular-mocks/angular-mocks.js',
       'control/content/**/*.js',
-      'widget/**/*.js',
       'test/assets/*.js',
       'test/**/*.spec.js'
     ],
