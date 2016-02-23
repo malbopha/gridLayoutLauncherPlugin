@@ -16,7 +16,7 @@
     <script src="../../js/ui-bootstrap.min.js"></script>
     <script src="../../js/angular-color-picker.js"></script>
     <script src="../../js/shared.js"></script>
-    <script type="text/javascript" src="/app/scripts/framework/pluginAPI/datastoreAPI.js"></script>
+
 </head>
 <body ng-controller="folderPluginCtrl" ng-cloak ng-show="datastoreInitialized">
 <div ng-form="frmMain">
@@ -191,7 +191,7 @@
                         backgroundImage: {},
                         selectedLayout: 1,
                         backgroundblur: 0,
-                        colorType: 'A'
+                        colors: {}
                     };
                 }
                 else {
@@ -204,9 +204,9 @@
             }
 
             $scope.data.design = $scope.data.design || {};
-            if (!$scope.data.design.colorType) {
-                $scope.data.design.colorType = "A";
-            }
+            $scope.data.design.colors = $scope.data.design.colors || {};
+
+            $scope.colorType = angular.equals({}, $scope.data.design.colors) ? "A" : "C";
 
             /*
              * watch for changes in data and trigger the saveData function on change
@@ -317,11 +317,9 @@
         };
 
         $scope.setColorType = function (colorType) {
-            if ($scope.data.design.colorType === colorType) return;
-            $scope.data.design.colorType = colorType;
-            if ($scope.data.design.colorType === "C" && !$scope.data.design.colors) {
-                $scope.data.design.colors = $scope.defaultColors;
-            }
+            if ($scope.colorType === colorType) return;
+            $scope.colorType = colorType;
+            $scope.data.design.colors = {};
         };
 
         angular.element($window).bind('mousedown', function () {

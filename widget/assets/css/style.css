@@ -123,6 +123,13 @@
     height: 100%;
 }
 
+.overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
 
 /* Media Queries */
 @media (max-width:500px){

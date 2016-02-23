@@ -8,24 +8,20 @@
     <link href="../../../scripts/owlCarousel/owlCarousel.css" rel="stylesheet"/>
     <link rel="stylesheet" href="../../../styles/helper.css">
     <link rel="stylesheet" href="../../../styles/siteIcons.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- JS -->
     <script src="../../../scripts/angular/angular.min.js"></script>
     <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
-
     <script type="text/javascript" src="../../../scripts/buildfire.js"></script>
     <script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
     <script src="../../../scripts/buildfire/components/pluginInstance/sortableList.js"></script>
+    <script src="assets/js/angular-lazy-img.js"></script>
+
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
 <style>
-    body.gridLayout {
-        background-color: {{data.design.colorType === 'C' && data.design.colors.backgroundColor}} !important;
-        background-image: url({{backgroundImage}}) !important;
-        background-size: cover !important;
-    }
 
     div.text-holder p {
         color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
@@ -35,6 +31,9 @@
         color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
     }
 </style>
+<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
+    <img lazy-img="{{backgroundImage}}" style="position: absolute;">
+</div>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
@@ -55,7 +54,7 @@
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img lazy-img="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
                             </div>
                         </td>
                     </tr>
@@ -160,7 +159,23 @@
         return [4, 2, 3, 1, 5, 6, 7];
     };
 
-    var folderPluginApp = angular.module('folderPlugin', []);
+    var folderPluginApp = angular.module('folderPlugin', ['angularLazyImg']);
+
+    folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
+       // var scrollable = document.querySelector('#scrollable');
+        lazyImgConfigProvider.setOptions({
+            offset: 300, // how early you want to load image (default = 100)
+            errorClass: 'error', // in case of loading image failure what class should be added (default = null)
+            successClass: 'success', // in case of loading image success what class should be added (default = null)
+            onError: function(image){
+                console.log(image);
+            }, // function fired on loading error
+            onSuccess: function(image){
+                console.log(image);
+            } // function fired on loading success
+           // container: angular.element(scrollable) // if scrollable container is not $window then provide it here
+        });
+    }])
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
         var view = null;
