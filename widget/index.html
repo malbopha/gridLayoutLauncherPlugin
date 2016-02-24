@@ -22,9 +22,10 @@
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
 <style>
-    body.gridLayout {
+   body.gridLayout {
           background-color: {{data.design.colors.backgroundColor}} !important;
-          background-image: url({{backgroundImage}}) !important;
+          background-image: url({{backgroundImage | cropImage:window.innerWidth:window.innerHeight:true}}) !important;
+          background-size:cover !important;
     }
     div.text-holder p {
         color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
@@ -34,9 +35,9 @@
         color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
     }
 </style>
-<!--<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
+<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
     <img ng-src="{{backgroundImage}}" style="position: absolute;">
-</div>-->
+</div>
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
@@ -162,9 +163,35 @@
         return [4, 2, 3, 1, 5, 6, 7];
     };
 
-    var folderPluginApp = angular.module('folderPlugin', ['angularLazyImg']);
+    var folderPluginApp = angular.module('folderPlugin', []);
 
-    folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
+
+    folderPluginApp.filter('cropImage', [function () {
+        return function (url, width, height, type) {
+            return buildfire.imageLib.cropImage(url, {
+                width: width,
+                height: height
+            });
+        }
+    }]);
+
+
+    /*folderPluginApp.directive("loadImage", [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+
+                var elem = $("<img>");
+                elem[0].onload = function () {
+                    element.attr("src", attrs.finalSrc);
+                    elem.remove();
+                };
+                elem.attr("src", attrs.finalSrc);
+            }
+        };
+    }])*/
+
+    /*folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
        // var scrollable = document.querySelector('#scrollable');
         lazyImgConfigProvider.setOptions({
             offset: 30, // how early you want to load image (default = 100)
@@ -178,7 +205,7 @@
             } // function fired on loading success
            // container: angular.element(scrollable) // if scrollable container is not $window then provide it here
         });
-    }])
+    }])*/
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
         var view = null;
