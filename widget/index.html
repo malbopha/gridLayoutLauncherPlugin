@@ -24,7 +24,7 @@
 <style>
    body.gridLayout {
           background-color: {{data.design.colors.backgroundColor}} !important;
-          background-image: url({{backgroundImage | cropImage:window.innerWidth:window.innerHeight:true}}) !important;
+          background-image: url({{backgroundImage}}) !important;
           background-size:cover !important;
     }
     div.text-holder p {
@@ -164,17 +164,6 @@
     };
 
     var folderPluginApp = angular.module('folderPlugin', []);
-
-
-    folderPluginApp.filter('cropImage', [function () {
-        return function (url, width, height, type) {
-            return buildfire.imageLib.cropImage(url, {
-                width: width,
-                height: height
-            });
-        }
-    }]);
-
 
     /*folderPluginApp.directive("loadImage", [function () {
         return {
