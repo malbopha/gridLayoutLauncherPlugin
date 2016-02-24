@@ -68,9 +68,15 @@
 .launcher-plugin.layout7 .menu-links .menu-item{
 	display:block;
 	padding:15px 11px 15px 15px;
+	position:relative;
 }
-.launcher-plugin.layout7 .menu-links .menu-item + .menu-item{
-	border-top:1px solid #ddd;
+.launcher-plugin.layout7 .menu-links .menu-item:before{
+	content:'';
+	border-top:1px solid #ddd !important;
+	opacity:0.25;
+	bottom:0;
+	width:100%;
+	position:absolute;
 }
 .launcher-plugin.layout7 .menu-links .menu-item span.main-icon{
 	font-size:32px;
