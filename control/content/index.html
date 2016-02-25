@@ -196,12 +196,6 @@
 
         plugins.onLoadAll = function () {
             $scope.data.content.loadAllPlugins = true;
-            $scope.data._buildfire = {
-                "plugins": {
-                    "dataType": "pluginInstance",
-                    "data": []
-                }
-            };
             folderPluginShared.digest($scope);
         };
 
