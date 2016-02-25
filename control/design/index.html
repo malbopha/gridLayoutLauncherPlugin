@@ -206,7 +206,7 @@
             $scope.data.design = $scope.data.design || {};
             $scope.data.design.colors = $scope.data.design.colors || {};
 
-            $scope.colorType = angular.equals({}, $scope.data.design.colors) ? "A" : "C";
+            $scope.data.design.colorType = angular.equals({}, $scope.data.design.colors) ? "A" : "C";
 
             /*
              * watch for changes in data and trigger the saveData function on change
@@ -317,8 +317,8 @@
         };
 
         $scope.setColorType = function (colorType) {
-            if ($scope.colorType === colorType) return;
-            $scope.colorType = colorType;
+            if ($scope.data.design.colorType === colorType) return;
+            $scope.data.design.colorType = colorType;
             $scope.data.design.colors = {};
         };
 
