@@ -41,13 +41,15 @@
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
-            <a class="menu-item clearfix" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
-                <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
-                <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
-                <span class="main-icon pull-left icon icon-puzzle" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
-                <p class="ellipsis pull-left">{{ plugin.title }}</p>
-                <span class="icon right-arrow pull-right icon-chevron-right"></span>
-            </a>
+			<div class="menu-link" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
+            	<a class="menu-item clearfix">
+	                <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
+	                <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
+	                <span class="main-icon pull-left icon icon-puzzle" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
+	                <p class="ellipsis pull-left">{{ plugin.title }}</p>
+	                <span class="icon right-arrow pull-right icon-chevron-right"></span>
+	            </a>
+			</div>
         </div>
     </div>
     <div class="launcher-plugin layout{{ layoutClass[data.design.selectedLayout - 1] }}" ng-if="data.design.selectedLayout != 7">
