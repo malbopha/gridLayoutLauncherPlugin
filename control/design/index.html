@@ -333,6 +333,14 @@
         $scope.setColorType = function (colorType) {
             if ($scope.data.design.colorType === colorType) return;
             $scope.data.design.colorType = colorType;
+			
+			if(!$scope.data.design.colors || angular.equals({}, $scope.data.design.colors)) {
+				$scope.data.design.colors = {
+					"backgroundColor": "#ffffff",
+					"bodyText": "#32373a",
+					"icons": "#09a3ee"
+				};
+			}
         };
 
         angular.element($window).bind('mousedown', function () {
