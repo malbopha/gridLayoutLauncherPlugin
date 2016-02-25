@@ -333,7 +333,6 @@
         $scope.setColorType = function (colorType) {
             if ($scope.data.design.colorType === colorType) return;
             $scope.data.design.colorType = colorType;
-            $scope.data.design.colors = {};
         };
 
         angular.element($window).bind('mousedown', function () {
