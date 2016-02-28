@@ -150,7 +150,9 @@
     var folderPluginApp = angular.module('folderPluginDesign', ['ui.bootstrap', 'mp.colorPicker']);
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$window', function ($scope, $window) {
-        $scope.defaultColors = {
+        var tmrDelay = null;
+		
+		$scope.defaultColors = {
             "backgroundColor": "#FFFFFF",
             "bodyText": "#32373a",
             "icons": "#09a3ee"
@@ -206,15 +208,27 @@
             $scope.data.design = $scope.data.design || {};
             $scope.data.design.colors = $scope.data.design.colors || {};
 
-            $scope.colorType = angular.equals({}, $scope.data.design.colors) ? "A" : "C";
+            $scope.data.design.colorType = angular.equals({}, $scope.data.design.colors) ? "A" : "C";
 
             /*
              * watch for changes in data and trigger the saveData function on change
              * */
-            $scope.$watch('data', saveData, true);
+            $scope.$watch('data', saveDataWithDelay, true);
             folderPluginShared.digest($scope);
         });
 
+				
+        /*
+         * create an artificial delay so api isnt called on every character entered
+         * */
+        var saveDataWithDelay = function (newObj, oldObj) {
+            if (tmrDelay) clearTimeout(tmrDelay);
+            if (angular.equals(newObj, oldObj)) return;
+            tmrDelay = setTimeout(function () {
+                saveData(newObj);
+            }, 500);
+        };
+		
         /*
          * Call the datastore to save the data object
          * */
@@ -317,9 +331,16 @@
         };
 
         $scope.setColorType = function (colorType) {
-            if ($scope.colorType === colorType) return;
-            $scope.colorType = colorType;
-            $scope.data.design.colors = {};
+            if ($scope.data.design.colorType === colorType) return;
+            $scope.data.design.colorType = colorType;
+			
+			if(!$scope.data.design.colors || angular.equals({}, $scope.data.design.colors)) {
+				$scope.data.design.colors = {
+					"backgroundColor": "#ffffff",
+					"bodyText": "#32373a",
+					"icons": "#09a3ee"
+				};
+			}
         };
 
         angular.element($window).bind('mousedown', function () {
