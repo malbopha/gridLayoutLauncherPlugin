@@ -22,18 +22,16 @@
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
 <style>
-  /* body.gridLayout {
+body.gridLayout {
           background-color: {{}} !important;
           background-image: url({{backgroundImage}}) !important;
-<<<<<<< HEAD
           background-size:cover !important;
-    }*/
+    }
     div.text-holder p {
-=======
+
 		  background-size:cover !important;
     }
     div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
->>>>>>> 085e830ca18d75abc68943913fa4041c6562298d
         color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
     }
 
@@ -41,9 +39,9 @@
         color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
     }
 </style>
-<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
+<!--<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
     <img lazy-img="{{backgroundImage}}" style="position: absolute;">
-</div>
+</div>-->
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
         <div class="menu-links">
