@@ -21,13 +21,16 @@
 
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
-<style ng-if="data.design.colorType === 'C'">
-    body.gridLayout {
+<style type="text/css" media="screen">
+	/* Show background image css regardless of theme chosen */
+	body.gridLayout {
           background-color: {{data.design.colors.backgroundColor}} !important;
           background-image: url({{backgroundImage}}) !important;
 		  background-size:cover !important;
     }
-	
+</style>
+<style ng-if="data.design.colorType === 'C'">	
+	/* Show theme css only if on custom theme option */
     div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
         color: {{data.design.colors.bodyText}} !important;
     }
