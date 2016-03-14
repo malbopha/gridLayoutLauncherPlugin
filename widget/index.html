@@ -24,18 +24,17 @@
 <style>
 body.gridLayout {
           background-image: url({{backgroundImage}}) !important;
-          background-size:cover !important;
-    }
-    div.text-holder p {
-
 		  background-size:cover !important;
     }
+</style>
+<style ng-if="data.design.colorType === 'C'">	
+	/* Show theme css only if on custom theme option */
     div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
-        color: {{data.design.colorType === 'C' && data.design.colors.bodyText}} !important;
+        color: {{data.design.colors.bodyText}} !important;
     }
 
     .icon, .glyphicon, .icon:hover {
-        color: {{data.design.colorType === 'C' && data.design.colors.icons}} !important;
+        color: {{data.design.colors.icons}} !important;
     }
 </style>
 <!--<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
