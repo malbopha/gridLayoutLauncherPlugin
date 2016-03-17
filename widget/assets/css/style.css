@@ -61,6 +61,9 @@
 	font-size:12px;
 	line-height:15px;
 	word-wrap:break-word;
+	position:relative;
+	transform: translateZ(0px);
+	-webkit-transform: translateZ(0px);
 }
 .launcher-plugin .launcher-slider{
 	background:none;
