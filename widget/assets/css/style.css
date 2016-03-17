@@ -62,7 +62,7 @@
 	line-height:15px;
 	word-wrap:break-word;
 	position:relative;
-	transform: trnaslateZ(0px);
+	transform: translateZ(0px);
 	-webkit-transform: translateZ(0px);
 }
 .launcher-plugin .launcher-slider{
