@@ -21,8 +21,9 @@
 
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
-<style>
+<style  type="text/css" media="screen">
 body.gridLayout {
+          background-color: {{data.design.colors.backgroundColor}} !important;
           background-image: url({{backgroundImage}}) !important;
 		  background-size:cover !important;
     }
@@ -42,10 +43,30 @@ body.gridLayout {
 </div>-->
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
+        <div class="main-logo" ng-if="data.design.logoImage">
+            <div class="logo-holder">
+                <table width="100%" cellspacing="0" cellpadding="0" height="100%">
+                    <tbody>
+                    <tr>
+                        <td align="center" valign="center">
+                            <div class="logo-media">
+                                <img load-image="1X1" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+            <div id="carousel" ng-if="data.content.carouselImages.length != 0"
+                 ng-style="data.content.carouselImages.length > 0 ? {'min-height': (9 * deviceWidth / 16) + 'px' } : {}"></div>
+
         <div class="menu-links">
 			<div class="menu-link" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
             	<a class="menu-item clearfix">
-	                <img ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
+	                <img load-image="1x1" ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
 	                <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
 	                <span class="main-icon pull-left icon icon-puzzle" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
 	                <p class="ellipsis pull-left">{{ plugin.title }}</p>
@@ -62,7 +83,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img load-image="1x1" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
                             </div>
                         </td>
                     </tr>
@@ -191,7 +212,23 @@ body.gridLayout {
         });
     }])
 
-    folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce', function ($scope, $sce) {
+    folderPluginApp.directive("loadImage", [function () {
+                return {
+                    restrict: 'A',
+                    link: function (scope, element, attrs) {
+                        element.attr("src", "../../../styles/media/holder-" + attrs.loadImage + ".gif");
+
+                        var elem = $("<img>");
+                        elem[0].onload = function () {
+                            element.attr("src", attrs.finalSrc);
+                            elem.remove();
+                        };
+                        elem.attr("src", attrs.finalSrc);
+                    }
+                };
+            }]);
+
+    folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce','$rootScope', function ($scope, $sce,$rootScope) {
         var view = null;
         var pagesCount = 0;
         var loadingData = true;
@@ -202,6 +239,11 @@ body.gridLayout {
         $scope.data = folderPluginShared.getDefaultScopeData();
         $scope.pageSize = folderPluginShared.getLayoutsPageSize();
         $scope.layoutClass = folderPluginShared.getLayoutsClass();
+
+
+        /*declare the device width heights*/
+        $rootScope.deviceHeight = window.innerHeight;
+        $rootScope.deviceWidth = window.innerWidth;
 
         function initDeviceSize(callback) {
             deviceHeight = window.innerHeight;
