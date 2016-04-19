@@ -44,7 +44,7 @@ body.gridLayout {
 </div>-->
 <div class="holder padding-zero">
     <div class="launcher-plugin layout7" ng-if="data.design.selectedLayout == 7">
-        <div class="main-logo" ng-if="data.design.logoImage">
+        <div class="main-logo" ng-if="data.design.logoImage && data.design.selectedLayout != 7">
             <div class="logo-holder">
                 <table width="100%" cellspacing="0" cellpadding="0" height="100%">
                     <tbody>
@@ -62,8 +62,8 @@ body.gridLayout {
         </div>
 
 
-            <div id="carousel" ng-if="data.content.carouselImages.length != 0"
-                 ng-style="data.content.carouselImages.length > 0 ? {'min-height': (9 * deviceWidth / 16) + 'px' } : {}"></div>
+            <div id="carousel" ng-if="data.content.carouselImages.length != 0 && data.design.selectedLayout != 7"
+                ></div>
 
         <div class="menu-links">
 			<div class="menu-link" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
@@ -98,7 +98,7 @@ body.gridLayout {
 
         <div ng-class="{ 'hidden': data.content.carouselImages.length == 0 }" class="plugin-banner clearfix">
             <div id="carousel" class="no-background"
-                 ng-style="data.content.carouselImages.length > 0 ? {'min-height': (9 * deviceWidth / 16) + 'px' } : {}"></div>
+                 ></div>
         </div>
 
         <div id="launcherSlider" class="launcher-slider text-center"></div>
