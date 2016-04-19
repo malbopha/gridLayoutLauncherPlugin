@@ -93,7 +93,8 @@ body.gridLayout {
         </div>
 
         <div ng-class="{ 'hidden': data.content.carouselImages.length == 0 }" class="plugin-banner clearfix">
-            <div id="carousel" class="no-background"></div>
+            <div id="carousel" class="no-background"
+                 ng-style="data.content.carouselImages.length > 0 ? {'min-height': (9 * deviceWidth / 16) + 'px' } : {}"></div>
         </div>
 
         <div id="launcherSlider" class="launcher-slider text-center"></div>
@@ -574,7 +575,7 @@ body.gridLayout {
                     slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y + '">\
 					            <div class="icon-holder text-center">';
                     if (pluginItem.iconUrl)
-                        slidesHTML += '	<img src="' + $scope.cropImage(pluginItem.iconUrl, {width: 100, height: 100}) + '">';
+                        slidesHTML += '	<img load-image="1x1" src="' + $scope.cropImage(pluginItem.iconUrl, {width: 100, height: 100}) + '">';
 
                     if (pluginItem.iconClassName)
                         slidesHTML += '<span class="icon main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
