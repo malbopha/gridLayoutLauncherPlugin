@@ -85,6 +85,8 @@ body.gridLayout {
                         <td align="center" valign="center">
                             <div class="logo-media">
                                 <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
+
                             </div>
                         </td>
                     </tr>
