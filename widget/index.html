@@ -350,7 +350,8 @@ body.gridLayout {
             if (result && result.data && !angular.equals({}, result.data) && result.data.content && result.data.design) {
                 if (result.data.content && result.data.content.loadAllPlugins) {
                     buildfire.components.pluginInstance.getAllPlugins(function (err, res) {
-                        pagesCount = Math.ceil(res.total / 20);
+                       pagesCount = Math.ceil(res.total / 50);
+                        //pagesCount = res.total;
                         result.data.plugins = res.data;
                         bind(result.data);
                         loadingData = false;
