@@ -51,7 +51,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) | addOnePixelSource}}">
                                 <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
                             </div>
                         </td>
@@ -85,7 +85,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) }}">
+                                <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) | addOnePixelSource }}">
                                 <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
 
                             </div>
@@ -216,6 +216,17 @@ body.gridLayout {
             offset: 0 // how early you want to load image (default = 100)
         });
     }])
+
+    folderPluginApp.filter('addOnePixelSource', function () {
+                return function (input) {
+                    if (input)
+                        var inputWidth=parseInt(input.split('?')[1].split('=')[1]);
+                    if(inputWidth==1200)
+                        inputWidth=inputWidth+1;
+                    return  input.split('?')[0]+'?'+'w='+inputWidth;
+                }
+            })
+
 
     folderPluginApp.directive("loadImage", [function () {
                 return {
