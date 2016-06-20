@@ -13,6 +13,7 @@
     <!-- JS -->
     <script src="../../../scripts/angular/angular.min.js"></script>
     <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
+    <script src="../../../scripts/smartcrop.js"></script>
     <script type="text/javascript" src="../../../scripts/buildfire.js"></script>
     <script type="text/javascript" src="../../../scripts/owlCarousel/owlCarousel.js"></script>
     <script src="../../../scripts/buildfire/components/carousel/carousel.js"></script>
@@ -50,7 +51,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) | addOnePixelSource}}">
+                                <img load-image="16X9" ng-src="{{data.design.logoImage | resizeImage : 400}}">
                                 <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
                             </div>
                         </td>
@@ -67,7 +68,7 @@ body.gridLayout {
         <div class="menu-links">
 			<div class="menu-link" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
             	<a class="menu-item clearfix">
-	                <img load-image="1x1" ng-src="{{ cropImage(plugin.iconUrl, {width: 100, height: 100}) }}" ng-if="plugin.iconUrl" class="pull-left">
+	                <img load-image="1x1" ng-src="{{ plugin.iconUrl | cropImage : 100:  100 }}" ng-if="plugin.iconUrl" class="pull-left">
 	                <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
 	                <span class="main-icon pull-left icon icon-puzzle" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
 	                <p class="ellipsis pull-left">{{ plugin.title }}</p>
@@ -84,7 +85,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img load-image="16X9" ng-src="{{ resizeImage(data.design.logoImage, {width: 400}) | addOnePixelSource }}">
+                                <img load-image="16X9" ng-src="{{ data.design.logoImage | resizeImage : 400}}">
                                 <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
 
                             </div>
@@ -216,16 +217,106 @@ body.gridLayout {
         });
     }])
 
-    folderPluginApp.filter('addOnePixelSource', function () {
+   /* folderPluginApp.filter('addOnePixelSource', function () {
                 return function (input) {
-                    if (input)
+                    if (input){
                         var inputWidth=parseInt(input.split('?')[1].split('=')[1]);
-                    if(inputWidth==1200)
-                        inputWidth=inputWidth+1;
-                    return  input.split('?')[0]+'?'+'w='+inputWidth;
+                        if(inputWidth==1200)
+                            inputWidth=inputWidth+1;
+                        return  input.split('?')[0]+'?'+'w='+inputWidth;
+                    }else{
+                        return input;
+                    }
                 }
-            })
+            })*/
 
+    /**
+     * A filter for retrieving cropped image using buildfire.imageLib.cropImage component.
+     * @param url
+     * @param width
+     * @param height
+     */
+    folderPluginApp.filter('resizeImage', [function () {
+                filter.$stateful = true;
+                function filter(url, width, height) {
+                    var _imgUrl;
+                    if (!_imgUrl) {
+                        var options={}
+
+                        if (height) {
+                            options.height = height;
+                        }else{
+                            options.height = window.innerHeight;
+                        }
+
+                        if (width) {
+                            //imagix server image breaks on width=1200 thats why we have added one pixel to it
+                            if(width==1200)
+                                width=width+1;
+                            options.width = width;
+                        }else{
+                            options.width = window.innerWidth;
+                        }
+
+                        buildfire.imageLib.local.resizeImage(url, options, function (err, imgUrl) {
+                            _imgUrl = imgUrl;
+                            return _imgUrl;
+                        });
+
+                    }
+
+                }
+                return filter;
+            }])
+
+    folderPluginApp.filter('getImageUrl', ['Buildfire', function (Buildfire) {
+                filter.$stateful = true;
+                function filter(url, width, height, type) {
+                    var _imgUrl;
+                    if(!_imgUrl) {
+                        if (type == 'resize') {
+                            Buildfire.imageLib.local.resizeImage(url, {
+                                width: width,
+                                height: height
+                            }, function (err, imgUrl) {
+                                _imgUrl = imgUrl;
+                            });
+                        } else {
+                            Buildfire.imageLib.local.cropImage(url, {
+                                width: width,
+                                height: height
+                            }, function (err, imgUrl) {
+                                _imgUrl = imgUrl;
+                            });
+                        }
+                    }
+                    return _imgUrl;
+                }
+                return filter;
+            }])
+
+    /**
+     * A filter for retrieving re-sized image using buildfire.imageLib.resizeImage component.
+     * @param url
+     * @param width
+     * @param height
+     */
+    folderPluginApp.filter('cropImage', [function () {
+                filter.$stateful = true;
+                function filter(url, width, height) {
+                    var _imgUrl;
+                    if (!_imgUrl) {
+                        buildfire.imageLib.local.cropImage(url, {
+                            width: width,
+                            height: height
+                        }, function (err, imgUrl) {
+                            _imgUrl = imgUrl;
+                        });
+                    }
+                    return _imgUrl;
+                }
+                return filter;
+            }])
 
     folderPluginApp.directive("loadImage", [function () {
                 return {
