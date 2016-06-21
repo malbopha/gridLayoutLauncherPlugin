@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
     <!-- JS -->
+
     <script src="../../../scripts/angular/angular.min.js"></script>
     <script src="../../../scripts/jquery/jquery-1.11.2.min.js"></script>
     <script src="../../../scripts/smartcrop.js"></script>
@@ -51,7 +52,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img load-image="16X9" ng-src="{{data.design.logoImage | resizeImage : 400}}">
+                                <img load-image="16X9" data-final-src="{{data.design.logoImage}}" crop-width="400" crop-type="resize">
                                 <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
                             </div>
                         </td>
@@ -68,7 +69,7 @@ body.gridLayout {
         <div class="menu-links">
 			<div class="menu-link" ng-repeat="plugin in data.plugins" ng-click="navigateToPlugin(plugin)">
             	<a class="menu-item clearfix">
-	                <img load-image="1x1" ng-src="{{ plugin.iconUrl | cropImage : 100:  100 }}" ng-if="plugin.iconUrl" class="pull-left">
+	                <img load-image="1x1" data-final-src="{{ plugin.iconUrl}}" crop-width="100" crop-height="100" ng-if="plugin.iconUrl"  crop-type="crop" class="pull-left">
 	                <span class="main-icon pull-left {{ plugin.iconClassName }}" ng-if="plugin.iconClassName"></span>
 	                <span class="main-icon pull-left icon icon-puzzle" ng-if="!plugin.iconUrl && !plugin.iconClassName"></span>
 	                <p class="ellipsis pull-left">{{ plugin.title }}</p>
@@ -85,7 +86,7 @@ body.gridLayout {
                     <tr>
                         <td align="center" valign="center">
                             <div class="logo-media">
-                                <img load-image="16X9" ng-src="{{ data.design.logoImage | resizeImage : 400}}">
+                                <img load-image="16X9" data-final-src="{{data.design.logoImage}}" crop-width="400" crop-type="resize">
                                 <img ng-if="!data.design.logoImage" src="../../../styles/media/holder-16x9.png">
 
                             </div>
@@ -230,109 +231,49 @@ body.gridLayout {
                 }
             })*/
 
-    /**
-     * A filter for retrieving cropped image using buildfire.imageLib.cropImage component.
-     * @param url
-     * @param width
-     * @param height
-     */
-    folderPluginApp.filter('resizeImage', [function () {
-                filter.$stateful = true;
-                function filter(url, width, height) {
-                    var _imgUrl;
-                    if (!_imgUrl) {
-                        var options={}
-
-                        if (height) {
-                            options.height = height;
-                        }else{
-                            options.height = window.innerHeight;
-                        }
-
-                        if (width) {
-                            //imagix server image breaks on width=1200 thats why we have added one pixel to it
-                            if(width==1200)
-                                width=width+1;
-                            options.width = width;
-                        }else{
-                            options.width = window.innerWidth;
-                        }
-
-                        buildfire.imageLib.local.resizeImage(url, options, function (err, imgUrl) {
-                            _imgUrl = imgUrl;
-                            return _imgUrl;
-                        });
-
-                    }
-
-                }
-                return filter;
-            }])
-
-    folderPluginApp.filter('getImageUrl', ['Buildfire', function (Buildfire) {
-                filter.$stateful = true;
-                function filter(url, width, height, type) {
-                    var _imgUrl;
-                    if(!_imgUrl) {
-                        if (type == 'resize') {
-                            Buildfire.imageLib.local.resizeImage(url, {
-                                width: width,
-                                height: height
-                            }, function (err, imgUrl) {
-                                _imgUrl = imgUrl;
-                            });
-                        } else {
-                            Buildfire.imageLib.local.cropImage(url, {
-                                width: width,
-                                height: height
-                            }, function (err, imgUrl) {
-                                _imgUrl = imgUrl;
-                            });
-                        }
-                    }
-                    return _imgUrl;
-                }
-                return filter;
-            }])
-
-    /**
-     * A filter for retrieving re-sized image using buildfire.imageLib.resizeImage component.
-     * @param url
-     * @param width
-     * @param height
-     */
-    folderPluginApp.filter('cropImage', [function () {
-                filter.$stateful = true;
-                function filter(url, width, height) {
-                    var _imgUrl;
-                    if (!_imgUrl) {
-                        buildfire.imageLib.local.cropImage(url, {
-                            width: width,
-                            height: height
-                        }, function (err, imgUrl) {
-                            _imgUrl = imgUrl;
-                        });
-                    }
-                    return _imgUrl;
-                }
-                return filter;
-            }])
 
     folderPluginApp.directive("loadImage", [function () {
-                return {
-                    restrict: 'A',
-                    link: function (scope, element, attrs) {
-                        element.attr("src", "../../../styles/media/holder-" + attrs.loadImage + ".gif");
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element.attr("src", "../../../styles/media/holder-" + attrs.loadImage + ".gif");
 
-                        var elem = $("<img>");
-                        elem[0].onload = function () {
-                            element.attr("src", attrs.finalSrc);
-                            elem.remove();
-                        };
-                        elem.attr("src", attrs.finalSrc);
+                var _img = attrs.finalSrc;
+                if (attrs.cropType == 'resize') {
+                    var option={};
+                    if(attrs.cropHeight){
+                        option.height=attrs.cropHeight
+                    }else{
+                        option.height=window.innerHeight;
                     }
-                };
-            }]);
+                    buildfire.imageLib.local.resizeImage(_img, {
+                        width: attrs.cropWidth,
+                        height: attrs.cropHeight
+                    }, function (err, imgUrl) {
+                        _img = imgUrl;
+                        replaceImg(_img);
+                    });
+                } else {
+                    buildfire.imageLib.local.cropImage(_img, {
+                        width: attrs.cropWidth,
+                        height: attrs.cropHeight
+                    }, function (err, imgUrl) {
+                        _img = imgUrl;
+                        replaceImg(_img);
+                    });
+                }
+
+                function replaceImg(finalSrc) {
+                    var elem = $("<img>");
+                    elem[0].onload = function () {
+                        element.attr("src", finalSrc);
+                        elem.remove();
+                    };
+                    elem.attr("src", finalSrc);
+                }
+            }
+        };
+    }])
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce','$rootScope', function ($scope, $sce,$rootScope) {
         var view = null;
@@ -538,7 +479,11 @@ body.gridLayout {
                 if (settings.width) {
                     options.width = settings.width;
                 }
-                return buildfire.imageLib.resizeImage(url, options);
+                buildfire.imageLib.local.resizeImage(url, options, function (err, imgUrl) {
+                    _imgUrl = imgUrl;
+                    return _imgUrl;
+                });
+             //   return buildfire.imageLib.resizeImage(url, options);
             }
         };
 
@@ -681,7 +626,7 @@ body.gridLayout {
                     slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y + '">\
 					            <div class="icon-holder text-center">';
                     if (pluginItem.iconUrl)
-                        slidesHTML += '	<img load-image="1x1" src="' + $scope.cropImage(pluginItem.iconUrl, {width: 100, height: 100}) + '">';
+                        slidesHTML += '	<img load-image="1x1" src="' + pluginItem.iconUrl+'" crop-width="100" crop-height="100" crop-type="crop">';
 
                     if (pluginItem.iconClassName)
                         slidesHTML += '<span class="icon main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
