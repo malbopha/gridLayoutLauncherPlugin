@@ -22,14 +22,7 @@
   <script src="assets/js/angular-lazy-img.js"></script>
 
 </head>
-<body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
-<style  type="text/css" media="screen">
-body.gridLayout {
-          background-color: {{data.design.colors.backgroundColor}} !important;
-          background-image: url({{backgroundImage}}) !important;
-		  background-size:cover !important;
-    }
-</style>
+<body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl" data-back-img="{{backgroundImage}}">
 <style ng-if="data.design.colorType === 'C'">	
 	/* Show theme css only if on custom theme option */
     div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
@@ -272,6 +265,39 @@ body.gridLayout {
                     elem.attr("src", finalSrc);
                 }
             }
+        };
+    }])
+
+    folderPluginApp.directive('backImg', ["$rootScope", function ($rootScope) {
+        return function (scope, element, attrs) {
+            attrs.$observe('backImg', function (value) {
+                var img = '';
+                if (value) {
+                    buildfire.imageLib.local.cropImage(value, {
+                        width: $rootScope.deviceWidth,
+                        height: $rootScope.deviceHeight
+                    }, function (err, imgUrl) {
+                        if (imgUrl) {
+                            img = imgUrl;
+                            element.attr("style", 'background:url(' + img + ') !important');
+                        } else {
+                            img = '';
+                            element.attr("style", 'background-color:white');
+                        }
+                        element.css({
+                            'background-size': 'cover'
+                        });
+                    });
+                    // img = $filter("cropImage")(value, $rootScope.deviceWidth, $rootScope.deviceHeight, true);
+                }
+                else {
+                    img = "";
+                    element.attr("style", 'background-color:white');
+                    element.css({
+                        'background-size': 'cover'
+                    });
+                }
+            });
         };
     }])
 
