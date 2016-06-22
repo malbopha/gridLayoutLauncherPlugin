@@ -21,7 +21,7 @@
 
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
-<style  type="text/css" media="screen">
+<style  type="text/css" media="screen" ng-if="data.design.colorType === 'C'">
 body.gridLayout {
           background-color: {{data.design.colors.backgroundColor}} !important;
           background-image: url({{backgroundImage}}) !important;
@@ -358,6 +358,7 @@ body.gridLayout {
 
         function dataLoadedHandler(result) {
             var pluginsList = null;
+            console.log("---------------aaaaaaaaaa", result)
             if (result && result.data && !angular.equals({}, result.data) && result.data.content && result.data.design) {
                 if (result.data.content && result.data.content.loadAllPlugins) {
                     buildfire.components.pluginInstance.getAllPlugins(function (err, res) {
