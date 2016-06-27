@@ -21,14 +21,19 @@
 
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl">
-<style  type="text/css" media="screen" ng-if="data.design.colorType === 'C'">
-body.gridLayout {
-          background-color: {{data.design.colors.backgroundColor}} !important;
-          background-image: url({{backgroundImage}}) !important;
-		  background-size:cover !important;
+<style type="text/css" media="screen" ng-if="data.design.colorType === 'A'">
+    body.gridLayout {
+    background-image: url({{backgroundImage}}) !important;
+    background-size:cover !important;
     }
 </style>
-<style ng-if="data.design.colorType === 'C'">	
+<style type="text/css" media="screen" ng-if="data.design.colorType === 'C'">
+    body.gridLayout {
+    background-color: {{data.design.colors.backgroundColor}} !important;
+    background-image: url({{backgroundImage}}) !important;
+    background-size:cover !important;
+    }
+
 	/* Show theme css only if on custom theme option */
     div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
         color: {{data.design.colors.bodyText}} !important;
@@ -38,7 +43,6 @@ body.gridLayout {
         color: {{data.design.colors.icons}} !important;
     }
 </style>
-<style></style>
 <!--<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
     <img lazy-img="{{backgroundImage}}" style="position: absolute;">
 </div>-->
@@ -358,7 +362,6 @@ body.gridLayout {
 
         function dataLoadedHandler(result) {
             var pluginsList = null;
-            console.log("---------------aaaaaaaaaa", result)
             if (result && result.data && !angular.equals({}, result.data) && result.data.content && result.data.design) {
                 if (result.data.content && result.data.content.loadAllPlugins) {
                     buildfire.components.pluginInstance.getAllPlugins(function (err, res) {
