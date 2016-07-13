@@ -481,7 +481,7 @@
             dataLoadedHandler(result);
         });
 
-        $scope.cropImage = function (url, settings) {
+        /*$scope.cropImage = function (url, settings) {
             var options = {};
             if (!url) {
                 return "";
@@ -495,7 +495,7 @@
                 }
                 return buildfire.imageLib.cropImage(url, options);
             }
-        };
+        };*/
 
         $scope.resizeImage = function (url, settings) {
             var options = {};
@@ -539,12 +539,11 @@
 
         function setBackgroundImage() {
             var backgroundImages = $scope.data.design.backgroundImage;
-            var backgroundImage = undefined;
 
             if (!backgroundImages) return;
 
             if (typeof($scope.data.design.backgroundImage) === "string") {
-                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
+                $scope.backgroundImage = $scope.data.design.backgroundImage;
             }
             else {
                 if (!matchedBackgroundName) {
@@ -555,16 +554,8 @@
                     }
                 }
                 console.log('matchedBackgroundName: ', matchedBackgroundName);
-
-                if(matchedBackgroundName){
-                    backgroundImage = $scope.cropImage(backgroundImages[matchedBackgroundName], {
-                        width: deviceWidth,
-                        height: deviceHeight
-                    });
-                }
+                $scope.backgroundImage = backgroundImages[matchedBackgroundName];
             }
-
-            $scope.backgroundImage = backgroundImage;
         }
 
         function getByMediaQuery(){
