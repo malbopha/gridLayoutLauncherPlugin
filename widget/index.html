@@ -23,7 +23,11 @@
 
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl" data-back-img="{{backgroundImage}}">
-<style ng-if="data.design.colorType === 'C'">	
+<style ng-if="data.design.colorType === 'C'">
+    body.gridLayout {
+    background-color: {{data.design.colors.backgroundColor}} !important;
+    }
+
 	/* Show theme css only if on custom theme option */
     div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
         color: {{data.design.colors.bodyText}} !important;
@@ -477,7 +481,7 @@
             dataLoadedHandler(result);
         });
 
-        $scope.cropImage = function (url, settings) {
+        /*$scope.cropImage = function (url, settings) {
             var options = {};
             if (!url) {
                 return "";
@@ -491,7 +495,7 @@
                 }
                 return buildfire.imageLib.cropImage(url, options);
             }
-        };
+        };*/
 
         $scope.resizeImage = function (url, settings) {
             var options = {};
@@ -535,12 +539,11 @@
 
         function setBackgroundImage() {
             var backgroundImages = $scope.data.design.backgroundImage;
-            var backgroundImage = undefined;
 
             if (!backgroundImages) return;
 
             if (typeof($scope.data.design.backgroundImage) === "string") {
-                backgroundImage = $scope.cropImage($scope.data.design.backgroundImage, {width: deviceWidth, height: deviceHeight});
+                $scope.backgroundImage = $scope.data.design.backgroundImage;
             }
             else {
                 if (!matchedBackgroundName) {
@@ -551,16 +554,8 @@
                     }
                 }
                 console.log('matchedBackgroundName: ', matchedBackgroundName);
-
-                if(matchedBackgroundName){
-                    backgroundImage = $scope.cropImage(backgroundImages[matchedBackgroundName], {
-                        width: deviceWidth,
-                        height: deviceHeight
-                    });
-                }
+                $scope.backgroundImage = backgroundImages[matchedBackgroundName];
             }
-
-            $scope.backgroundImage = backgroundImage;
         }
 
         function getByMediaQuery(){
