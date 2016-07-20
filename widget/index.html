@@ -305,7 +305,7 @@
         };
     }])
 
-    folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce','$rootScope', function ($scope, $sce,$rootScope) {
+    folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce','$rootScope', '$compile', function ($scope, $sce, $rootScope, $compile) {
         var view = null;
         var pagesCount = 0;
         var loadingData = true;
@@ -400,7 +400,8 @@
             }
 
             if ($scope.data.design.selectedLayout != 7) {
-                $('#launcherSlider').html(prepareSliderHTML());
+                var sliderHtml = $compile(prepareSliderHTML())($scope);
+                $('#launcherSlider').html(sliderHtml);
                 if ($scope.data.plugins.length > 1) {
                     $('#launcherSlider').owlCarousel({
                         loop: false,
