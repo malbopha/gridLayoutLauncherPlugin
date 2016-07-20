@@ -647,7 +647,7 @@
                     slidesHTML += '<a class="launcher-icon navigate-to-plugin" data-index="' + i + ',' + y + '">\
 					            <div class="icon-holder text-center">';
                     if (pluginItem.iconUrl)
-                        slidesHTML += '	<img load-image="1x1" src="' + pluginItem.iconUrl+'" crop-width="100" crop-height="100" crop-type="crop">';
+                        slidesHTML += '	<img load-image="1x1" data-final-src="' + pluginItem.iconUrl+'" crop-width="100" crop-height="100" crop-type="crop">';
 
                     if (pluginItem.iconClassName)
                         slidesHTML += '<span class="icon main-icon text-primary ' + pluginItem.iconClassName + '"></span>';
