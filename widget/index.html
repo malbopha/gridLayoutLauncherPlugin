@@ -23,34 +23,20 @@
 
 </head>
 <body ng-cloak class="gridLayout" ng-controller="folderPluginCtrl" data-back-img="{{backgroundImage}}">
-	
-	<style type="text/css" media="screen" ng-if="data.design.colorType === 'A'">
-    	body.gridLayout {
-   	 		background-image: url({{backgroundImage}}) !important;
-			background-size:cover !important;
-		}
-	</style>
-	
-	<style type="text/css" media="screen" ng-if="data.design.colorType === 'C'">
-	   	body.gridLayout {
-	    	background-color: {{data.design.colors.backgroundColor}} !important;
-			background-image: url({{backgroundImage}}) !important;
-			background-size:cover !important;
-		}
-		body.gridLayout {
-	    background-color: {{data.design.colors.backgroundColor}} !important;
-	    }
+<style ng-if="data.design.colorType === 'C'">
+    body.gridLayout {
+    background-color: {{data.design.colors.backgroundColor}} !important;
+    }
 
-		/* Show theme css only if on custom theme option */
-	    div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
-	        color: {{data.design.colors.bodyText}} !important;
-	    }
+	/* Show theme css only if on custom theme option */
+    div.text-holder p, .launcher-plugin.layout7 .menu-links .menu-item p {
+        color: {{data.design.colors.bodyText}} !important;
+    }
 
-	    .icon, .glyphicon, .icon:hover {
-	        color: {{data.design.colors.icons}} !important;
-	    }
-	</style>
-
+    .icon, .glyphicon, .icon:hover {
+        color: {{data.design.colors.icons}} !important;
+    }
+</style>
 <!--<div class="overlay background" ng-if="data.design.selectedLayout !== 7 && backgroundImage">
     <img lazy-img="{{backgroundImage}}" style="position: absolute;">
 </div>-->
@@ -301,10 +287,10 @@
                         } else {
                             img = '';
                             element.attr("style", 'background-color:white');
+                            element.css({
+                                'background-size': 'cover'
+                            });
                         }
-                        element.css({
-                            'background-size': 'cover'
-                        });
                     });
                     // img = $filter("cropImage")(value, $rootScope.deviceWidth, $rootScope.deviceHeight, true);
                 }
