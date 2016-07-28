@@ -104,3 +104,9 @@
     height: 17%;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff00ff', endColorstr='#ff0000');
 }
+
+/* Color Grid Theme Colors */
+.colorgrid .coloritem label{
+	vertical-align:top;
+	top:9px !important;
+}
