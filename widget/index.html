@@ -624,8 +624,9 @@
             w = w / r;
             h = h / r;
             if (w < h) {
-                w = h;
-                h = w;
+                w = w + h;
+                h = w - h;
+                w = w - h;
             }
 
             return w / h;
