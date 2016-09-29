@@ -102,7 +102,18 @@
         <div id="launcherSlider" class="launcher-slider text-center"></div>
     </div>
 </div>
+
 <script>
+    var loadTime = function() {
+        window.setTimeout(function () {
+            var navigationStart = performance.timing.navigationStart;//Beginning
+            var loadEventEnd = performance.timing.loadEventEnd; //Ending
+
+            console.log("User-perceived page loading time: ", loadEventEnd - navigationStart);
+        }, 0);
+    };
+
+    window.addEventListener("load", loadTime, false);
 
     /* Shared functionality */
     var folderPluginShared = folderPluginShared || {};
@@ -239,22 +250,18 @@
                     var _img = attrs.finalSrc;
 
                     if (attrs.cropType == 'resize') {
-                        buildfire.imageLib.local.resizeImage(_img, {
+                        _img = buildfire.imageLib.local.resizeImage(_img, {
                             width: attrs.cropWidth,
                             height: attrs.cropHeight
-                        }, function (err, imgUrl) {
-                            _img = imgUrl;
-                            replaceImg(_img);
                         });
                     } else {
-                        buildfire.imageLib.local.cropImage(_img, {
+                        _img = buildfire.imageLib.cropImage.cropImage(_img, {
                             width: attrs.cropWidth,
                             height: attrs.cropHeight
-                        }, function (err, imgUrl) {
-                            _img = imgUrl;
-                            replaceImg(_img);
                         });
                     }
+
+                    replaceImg(_img);
                 });
 
                 function replaceImg(finalSrc) {
@@ -274,22 +281,20 @@
             attrs.$observe('backImg', function (value) {
                 var img = '';
                 if (value) {
-                    buildfire.imageLib.local.cropImage(value, {
+                    img = buildfire.imageLib.cropImage(value, {
                         width: $rootScope.deviceWidth,
                         height: $rootScope.deviceHeight
-                    }, function (err, imgUrl) {
-                        if (imgUrl) {
-                            img = imgUrl;
-                            element.attr("style", 'background:url(' + img + ') !important ; background-size: cover !important;');
-                        } else {
-                            img = '';
-                            element.attr("style", 'background-color:white');
-                            element.css({
-                                'background-size': 'cover'
-                            });
-                        }
                     });
-                    // img = $filter("cropImage")(value, $rootScope.deviceWidth, $rootScope.deviceHeight, true);
+
+                    if (img) {
+                        element.attr("style", 'background:url(' + img + ') !important ; background-size: cover !important;');
+                    } else {
+                        img = '';
+                        element.attr("style", 'background-color:white');
+                        element.css({
+                            'background-size': 'cover'
+                        });
+                    }
                 }
                 else {
                     img = "";
@@ -300,7 +305,7 @@
                 }
             });
         };
-    }])
+    }]);
 
     folderPluginApp.controller('folderPluginCtrl', ['$scope', '$sce','$rootScope', '$compile', function ($scope, $sce, $rootScope, $compile) {
         var view = null;
