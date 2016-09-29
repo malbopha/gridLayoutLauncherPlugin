@@ -204,41 +204,12 @@
 
     var folderPluginApp = angular.module('folderPlugin', ['angularLazyImg']);
 
-   /* folderPluginApp.directive("loadImage", [function () {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-
-                var elem = $("<img>");
-                elem[0].onload = function () {
-                    element.attr("src", attrs.finalSrc);
-                    elem.remove();
-                };
-                elem.attr("src", attrs.finalSrc);
-            }
-        };
-    }])*/
-
     folderPluginApp.config(['lazyImgConfigProvider', function(lazyImgConfigProvider){
        // var scrollable = document.querySelector('#scrollable');
         lazyImgConfigProvider.setOptions({
             offset: 0 // how early you want to load image (default = 100)
         });
-    }])
-
-   /* folderPluginApp.filter('addOnePixelSource', function () {
-                return function (input) {
-                    if (input){
-                        var inputWidth=parseInt(input.split('?')[1].split('=')[1]);
-                        if(inputWidth==1200)
-                            inputWidth=inputWidth+1;
-                        return  input.split('?')[0]+'?'+'w='+inputWidth;
-                    }else{
-                        return input;
-                    }
-                }
-            })*/
-
+    }]);
 
     folderPluginApp.directive("loadImage", [function () {
         return {
@@ -483,22 +454,6 @@
             }
             dataLoadedHandler(result);
         });
-
-        /*$scope.cropImage = function (url, settings) {
-            var options = {};
-            if (!url) {
-                return "";
-            }
-            else {
-                if (settings.height) {
-                    options.height = settings.height;
-                }
-                if (settings.width) {
-                    options.width = settings.width;
-                }
-                return buildfire.imageLib.cropImage(url, options);
-            }
-        };*/
 
         $scope.resizeImage = function (url, settings) {
             var options = {};
