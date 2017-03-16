@@ -414,10 +414,8 @@
                                 renderSlider();
                             }, true);
                             buildfire.navigation.onAppLauncherInactive(function () {
-                                setTimeout(function () {
-                                    $('#launcherSlider').trigger('destroy.owl.carousel').removeClass('owl-carousel owl-loaded');
-                                    $('#launcherSlider').find('.owl-stage-outer').children().unwrap();
-                                }, 200);
+                                $('#launcherSlider').trigger('destroy.owl.carousel').removeClass('owl-carousel owl-loaded');
+                                $('#launcherSlider').find('.owl-stage-outer').children().unwrap();
                             }, true);
                         }
                     });
