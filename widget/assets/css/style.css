@@ -34,6 +34,34 @@
 	float:left;
 	width:100%;
 }
+@media (min-height: 768px) {
+.launcher-plugin .launcher-icons .launcher-icon{
+	float:left;
+	margin-bottom:5px;
+	height:24px;
+	overflow:hidden;
+}
+.launcher-plugin .launcher-icons.four-row .launcher-icon{
+	width:40%;
+	padding:0 3px;
+}
+.launcher-plugin .launcher-icons.three-row .launcher-icon{
+	width:33.333%;
+}
+.launcher-plugin .launcher-icons .launcher-icon .main-icon {
+	font-size: 60px;
+	display: block;
+}
+.launcher-plugin .launcher-icons .launcher-icon .text-holder p{
+	margin:6px 0 0;
+	font-size:18px;
+	line-height:20px;
+	word-wrap:break-word;
+	position:relative;
+	transform: translateZ(0px);
+	-webkit-transform: translateZ(0px);
+}
+}
 .launcher-plugin .launcher-icons .launcher-icon{
 	float:left;
 	margin-bottom:12px;
@@ -171,6 +199,17 @@
     }
 	.plugin-slide img{
 		max-height:300px !important;
+	}
+}
+@media (min-height: 768px) {
+	.launcher-plugin .main-logo .logo-holder img {
+		max-height: 250px;
+	}
+	.launcher-plugin .main-logo .logo-holder, .launcher-plugin .main-logo {
+		height: 310px;
+	}
+	.plugin-slide img{
+		max-height:600px !important;
 	}
 }
 @media (max-height: 560px) {
